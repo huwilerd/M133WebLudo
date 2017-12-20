@@ -6,7 +6,7 @@
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Personalien</title>
-    <link href="design/style.css" rel="stylesheet" />
+    <link href="design/formStyle.css" rel="stylesheet" />
 </head>
 <body>
 	
@@ -125,9 +125,14 @@
 		        </tr>
 
 		    <tr>
-			    <td><p class="error" id="servererror" runat="server"></p></td>
 			    <td>
+                    <p class="error" id="servererror" runat="server"></p>
+                    
+			    </td>
+			    <td>
+                    <a href="MainMenu.aspx"><   Zurück</a>
 				    <input type="submit" value="Speichern" id="saveButton" runat="server"/>
+                    
 			    </td>
 		    </tr>
 		    </table>

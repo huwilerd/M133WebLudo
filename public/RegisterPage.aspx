@@ -61,6 +61,7 @@
 		    <tr>
 			    <td><p class="error" id="servererror" runat="server"></p></td>
 			    <td>
+                    <a href="LoginPage.aspx"><   Zurück</a>
 				    <input type="submit" value="Registrieren" id="registerButton" runat="server"/>
 			    </td>
 		    </tr>

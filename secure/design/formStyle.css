@@ -58,15 +58,7 @@ td a:hover
     text-decoration: none;
     font-family: 'Open Sans', sans-serif;
 }
-td a
+#saveButton
 {
-    margin-left: 0px;
-    padding-left: 0px;
-}
-#registerButton 
-{
-    margin-left: 4px;
-}
-.wietesFeld {
-    width: 200px;
+    margin-left: 10px;
 }
