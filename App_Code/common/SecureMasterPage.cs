@@ -74,7 +74,7 @@ public abstract class SecureMasterPage : MasterPage
         StringBuilder html = new StringBuilder();
         html.Append("<div class=\"flexItem\">");
         html.Append("<div class=\"mainItemImage\"> <img src=\"" + game.imageLink + "\" /></div>");
-        html.Append("<div class=\"mainItemTitle\"><h1>" + game.name + "</h1><p>" + game.description + "</p></div>");
+        html.Append("<div class=\"mainItemTitle\"><h1>" + game.name + "</h1><p>Vermietung gültig von <b>"+ hire.fromDate.ToString("dd.MM.yyyy") +"</b> bis <b>"+ hire.toDate.ToString("dd.MM.yyyy") +"</b></p></div>");
         html.Append("<a href=\"Detail.aspx?id=" + game.gameId + "&hire="+hire.hireId+"&action=1\" class=\"button\" style=\"vertical-align:middle\"><span>" + buttonText + "</span></button>");
         html.Append("</div></a>");
         return html.ToString();

@@ -9,6 +9,9 @@ public partial class _Default : SecureMasterPage
 {
     protected override void setupPage(Session session)
     {
+        EmailField.Visible = false;
+        PasswortField.Visible = false;
+
         if (session != null)
         {
             if(!IsPostBack)
@@ -26,12 +29,12 @@ public partial class _Default : SecureMasterPage
                     OrtField.Text = detail.ort;
                     LandField.Text = detail.land;
 
-                    EmailField.Visible = true;
-                    PasswortField.Visible = true;
+                    EmailField.CssClass = "";
+                    PasswortField.CssClass += "";
                 } else
                 {
-                    EmailField.Visible = false;
-                    PasswortField.Visible = false;
+                    EmailField.CssClass = "hide";
+                    PasswortField.CssClass = "hide";
                 }
                 User user = DataProvider.getInstance().getUserFromId(session.userId);
                 EmailField.Text = user.email;
