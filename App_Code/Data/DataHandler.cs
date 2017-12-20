@@ -136,9 +136,25 @@ public class DataHandler
         int hireId = hires.Count + 1;
         hire.hireId = hireId;
         hires.Add(hire);
+        hires.Insert(0, hire);
 
         String newJson = DataHelper.createJsonFromObject(hires);
         DataHelper.saveDataToFile(AppConst.HIRE_FILE, newJson, true);
+
+        //Decrease game count
+        List<Game> games = DataProvider.getInstance().getAllGame();
+
+        foreach(Game tmpGame in games)
+        {
+            if(tmpGame.gameId == hire.gameId)
+            {
+                tmpGame.anzahl -= 1;
+                break;
+            }
+        }
+        String gameJson = DataHelper.createJsonFromObject(games);
+        DataHelper.saveDataToFile(AppConst.GAME_FILE, gameJson, true);
+
         return hire;
     }
 
@@ -200,6 +216,5 @@ public class DataHandler
         DataHelper.saveDataToFile(AppConst.SESSION_FILE, newJson, true);
         return usersSession;
     }
-
 
 }

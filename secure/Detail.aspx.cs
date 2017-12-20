@@ -112,6 +112,13 @@ public partial class _Default : SecureMasterPage
             DateTime fromDate = Convert.ToDateTime(VonDateField.Text);
             DateTime toDate = fromDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
 
+            DateTime currentDate = DateTime.Now;
+            if(fromDate.Date < currentDate.Date)
+            {
+                servererror.InnerText = "Die Ausleihe darf nicht in der Vergangenheit liegen.";
+                hasError = true;
+            }
+
             Hire newHire = new Hire(-1, user.userId, currentGame.gameId, fromDate, toDate, 0, false);
 
             if(!hasError) { 

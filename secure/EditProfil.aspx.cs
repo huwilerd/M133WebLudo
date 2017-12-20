@@ -7,16 +7,19 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : SecureMasterPage
 {
+
+    protected override void setupPageWithSession(Session session)
+    {
+        base.setupPageWithSession(session);
+    }
+
     protected override void setupPage(Session session)
     {
-        EmailField.Visible = false;
-        PasswortField.Visible = false;
-
+        base.setupPage(session);
         if (session != null)
         {
-            if(!IsPostBack)
-            {
-                UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
+            UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
+
                 if(detail != null)
                 {
                     AnredeField.Value = AnredeField.Items.FindByText(detail.anrede).Value;
@@ -28,19 +31,33 @@ public partial class _Default : SecureMasterPage
                     PLZField.Text = detail.postleitzahl;
                     OrtField.Text = detail.ort;
                     LandField.Text = detail.land;
-
-                    EmailField.CssClass = "";
-                    PasswortField.CssClass += "";
+                    showAccountFields(true);
                 } else
-                {
-                    EmailField.CssClass = "hide";
-                    PasswortField.CssClass = "hide";
-                }
+                  {
+                    showAccountFields(false);
+                  }
+                
                 User user = DataProvider.getInstance().getUserFromId(session.userId);
                 EmailField.Text = user.email;
-            }
         } else {
             Response.Redirect("../public/LoginPage.aspx");
+        }
+    }
+
+    private void showAccountFields(bool show)
+    {
+        if (show)
+        {
+            EmailFieldLabel.Visible = true;
+            PasswortFieldLabel.Visible = true;
+            EmailField.CssClass = "";
+            PasswortField.CssClass = "";
+        } else
+        {
+            EmailFieldLabel.Visible = false;
+            PasswortFieldLabel.Visible = false;
+            EmailField.CssClass = "hide";
+            PasswortField.CssClass = "hide";
         }
     }
 

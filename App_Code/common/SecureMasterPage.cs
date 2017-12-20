@@ -27,7 +27,7 @@ public abstract class SecureMasterPage : MasterPage
         List<Game> games = DataProvider.getInstance().getAllGame();
         foreach(Game game in games)
         {
-            htmlBuilder.Append(createGameElement(game, "Ausleihe reservieren"));
+            htmlBuilder.Append(createGameElement(game, "Ausleihe reservieren", game.anzahl > 0));
         }
         if(games.Count == 0)
         {
@@ -80,13 +80,19 @@ public abstract class SecureMasterPage : MasterPage
         return html.ToString();
     }
 
-    private String createGameElement(Game game, String buttonText)
+    private String createGameElement(Game game, String buttonText, bool active)
     {
         StringBuilder html = new StringBuilder();
         html.Append("<div class=\"flexItem\">");
         html.Append("<div class=\"mainItemImage\"> <img src=\"" + game.imageLink + "\" /></div>");
         html.Append("<div class=\"mainItemTitle\"><h1>" + game.name + "</h1><p>" + game.description + "</p></div>");
-        html.Append("<a href=\"Detail.aspx?id="+game.gameId+"&action=0\" class=\"button\" style=\"vertical-align:middle\"><span>" + buttonText + "</span></button>");
+        if (active)
+        {
+            html.Append("<a href=\"Detail.aspx?id=" + game.gameId + "&action=0\" class=\"button\" style=\"vertical-align:middle\"><span>" + buttonText + "</span></a>");
+        } else
+        {
+            html.Append("<a href=\"#!\" class=\"button notactive\" style=\"vertical-align:middle\"><span>Nicht verfügbar</span></a>");
+        }
         html.Append("</div></a>");
         return html.ToString();
     }

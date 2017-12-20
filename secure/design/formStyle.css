@@ -62,3 +62,7 @@ td a:hover
 {
     margin-left: 10px;
 }
+
+.hide {
+    visibility: hidden;
+}

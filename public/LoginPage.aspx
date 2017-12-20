@@ -49,7 +49,7 @@
                     </td>
 		        </tr>
                 <tr>
-                    <td colspan="2"><p id="servererror" runat="server"></p></td>
+                    <td colspan="2"><p id="servererror" class="error" runat="server"></p></td>
                 </tr>
 		    </table>
         </div>

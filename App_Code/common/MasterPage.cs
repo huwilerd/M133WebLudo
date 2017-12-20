@@ -62,6 +62,9 @@ public abstract class MasterPage : Page
                     if (getPageName() != AppConst.DETAIL_FORM_PAGE_NAME)
                     {
                         Response.Redirect("../secure/EditProfil.aspx");
+                    } else
+                    {
+                        setupPage(DataProvider.getInstance().getSessionFromToken(getSessionKey()));
                     }
                 }
             }

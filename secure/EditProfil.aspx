@@ -107,7 +107,7 @@
 
                  <tr>
                 <td>
-				    <label for="EmailField">E-Mail:</label>	 
+				    <label for="EmailField" id="EmailFieldLabel" runat="server">E-Mail:</label>	 
                 </td>
                 <td>     
 				    <asp:TextBox ID="EmailField" runat="server" />
@@ -117,7 +117,7 @@
 
                 <tr>
                 <td>
-				    <label for="PasswortField">Passwort:</label>	 
+				    <label for="PasswortField" id="PasswortFieldLabel" runat="server">Passwort:</label>	 
                 </td>
                 <td>     
 				    <asp:TextBox ID="PasswortField" TextMode="Password" runat="server" />
