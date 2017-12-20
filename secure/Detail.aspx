@@ -6,7 +6,7 @@
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Personalien</title>
-    <link href="design/style.css" rel="stylesheet" />
+    <link href="design/detailStyle.css" rel="stylesheet" />
 </head>
 <body>
 	

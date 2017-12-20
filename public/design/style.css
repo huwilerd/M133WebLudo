@@ -16,7 +16,7 @@ h1
 {
     text-transform: uppercase;
     color: #393939;
-    margin-bottom: 0px;
+    margin-bottom: 18px;
 }
 td input
 {
@@ -52,4 +52,9 @@ td a:hover
     text-transform: none;
     
     
+}
+#backLink a
+{
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
 }

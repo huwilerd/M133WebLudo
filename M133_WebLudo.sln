@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2008
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "M133_WebLudo", ".", "{52C463A9-8C66-4A03-9DCC-6C96B555E4C5}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_52956"
+		Debug.AspNetCompiler.PhysicalPath = "..\M133_WebLudo\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_52956\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_52956"
+		Release.AspNetCompiler.PhysicalPath = "..\M133_WebLudo\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_52956\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "52956"
+		SlnRelativePath = "..\M133_WebLudo\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52C463A9-8C66-4A03-9DCC-6C96B555E4C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52C463A9-8C66-4A03-9DCC-6C96B555E4C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3814000-A3FC-4F5A-88FC-AD8824335D9A}
+	EndGlobalSection
+EndGlobal

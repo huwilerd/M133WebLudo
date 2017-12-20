@@ -1,0 +1,22 @@
+﻿body 
+{
+    font-family: 'Open Sans', sans-serif;
+}
+
+#mainContainer 
+{
+    width: 670px;
+    margin: 0 auto;
+}
+.error 
+{
+    color: red;
+    font-size: 12px;
+    text-transform: none;
+}
+h1 
+{
+    text-transform: uppercase;
+    color: #393939;
+    margin-bottom: 18px;
+}
