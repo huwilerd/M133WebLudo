@@ -51,4 +51,9 @@ public class DataHelper
         }
         
     }
+
+    public static bool validateField(String value)
+    {
+        return value == null || value == "";
+    }
 }

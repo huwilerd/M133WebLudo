@@ -38,7 +38,7 @@
 		    <tr>
 			    <td><p class="error" id="servererror" runat="server"></p></td>
 			    <td>
-                    <a href="MainPage.aspx"><   Zurück</a>
+                    <a href="MainMenu.aspx"><   Zurück</a>
 				    <input type="submit" value="Jetzt Ausleihe beantragen" id="tryButton" runat="server"/>
 			    </td>
 		    </tr>

@@ -80,6 +80,14 @@ public partial class _Default : SecureMasterPage
         String plz = PLZField.Text;
         String ort = OrtField.Text;
         String land = LandField.Text;
+
+        //Validierung Felder
+        if(DataHelper.validateField(anrede))
+        {
+            hasError = true;
+            servererror.InnerText = "Anrede bitte ausfüllen";
+        }
+
         UserDetail detail = new UserDetail(user.userId, anrede, vorname, nachname, geburtsdatum, telefon, strasse, plz, ort, land);
 
 
