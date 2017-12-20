@@ -1,0 +1,220 @@
+﻿body 
+{
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Roboto', sans-serif;
+    height:100%;
+    overflow: hidden;
+    
+}
+/*GRUNDDESIGN*/
+header 
+{
+    width: 100%;
+    background-color: #333;
+
+}
+main, aside
+{
+    height: inherit;
+}
+aside
+{
+    
+    width:15%;
+    background-color:#444;
+    float: left;
+}
+main
+{
+    width:85%;
+    background-color:#d2d2d2;
+    float: right;
+    overflow: scroll;
+}
+/**/
+
+/*Header*/
+nav
+{
+    height: 100%;
+    width: 100%;
+
+}
+
+.navigationElement
+{
+    float: right;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 1% 10px;
+    vertical-align: middle;
+    
+}
+.navigationElement 
+{
+    color: #999;
+    
+}
+
+a
+{
+        color: #ddd;
+        text-decoration: none;
+}
+a:hover
+{
+    transition-duration: 200ms;
+    color: #ff5252;
+    cursor: pointer;
+}
+.selected {
+    color: #ff5252;
+}
+#user
+{
+    margin-left: 50px;
+}
+/**/
+
+/*SideBar*/
+
+.sideElement
+{
+   padding: 1vh 0px;
+}
+.sideElement a
+{
+    line-height: none;
+    font-size: 1.8vh;
+    text-transform: uppercase;
+
+}
+#containterSideBar 
+{
+    padding-top:30px;
+    margin: 0px 7%;
+}
+
+
+/**/
+/*Main*/
+#containerMain
+{
+    padding: 18px;
+}
+#flexContainer
+{
+    display: flex; 
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+}
+.flexItem
+{
+    /*flex-grow: 1;*/
+    background-color: #a8a8a8;
+    width: 360px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px;
+    padding: 10px;
+}
+.mainItemImage img
+{
+    width: 150px;
+    float: left;
+    
+}
+.mainItemTitle
+{
+    
+    float: right;
+    width: 200px;
+    margin-left: 10px;
+    height: 213px;
+    overflow-y: scroll;
+}
+.mainItemTitle h1
+{
+    color: #222;
+}
+.mainItemTitle p
+{
+    
+    color: #444;
+}
+.button 
+{
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #666;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 20px;
+    padding: 15px;
+    width: 100%;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin-top: 10px;
+    
+}
+
+.button span 
+{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after 
+{
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+.button:hover span 
+{
+    padding-right: 25px;
+}
+.button:hover span:after 
+{
+    opacity: 1;
+    right: 0;
+}
+
+
+
+
+
+/**/
+
+
+
+
+
+
+
+/*Sonstiges*/
+.clearfix:after 
+{
+    content: ".";
+    clear: both;
+    display: block;
+    visibility: hidden;
+    height: 0px;
+}
+#wrapper
+{
+    height:97%;
+    width: 100%;
+    position:absolute;
+}
+/**/
+
+
