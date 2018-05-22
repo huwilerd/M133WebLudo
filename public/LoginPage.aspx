@@ -31,7 +31,7 @@
 		        </tr>
 		        <tr>
 			        <td>
-				        <label for="PasswordField" runat="server" />Password:</label>
+				        <label for="PasswordField" runat="server">Password:</label>
 			        </td>
 			        <td>
 				        <asp:TextBox ID="PasswordField" TextMode="Password" runat="server" />

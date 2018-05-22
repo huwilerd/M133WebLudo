@@ -15,13 +15,18 @@ public abstract class MasterViewlet
         if (connection == null)
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            builder.DataSource = ".";
+            builder.DataSource = "DESKTOP-QC9NDF8\\SQLEXPRESS";
             builder.InitialCatalog = "Ludothek";
             builder.IntegratedSecurity = true;
             string connectionString = builder.ConnectionString;
-            SqlConnection connection = new SqlConnection(connectionString);
+            connection = new SqlConnection(connectionString);
         }
         return connection;
+    }
+
+    protected ServerResponse createResponse(int id, string message, object respObject, bool status)
+    {
+        return new ServerResponse(id, message, respObject, status);
     }
 
 

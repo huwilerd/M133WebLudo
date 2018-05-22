@@ -17,7 +17,7 @@ public partial class LoginPageController : MasterPage
 	{
 		String username = EmailField.Text;
 		String password = PasswordField.Text;
-        Session session = SessionHandler.getInstance().tryLoginUser(username, password);
+        /*Session session = SessionHandler.getInstance().tryLoginUser(username, password);
         if (session.status)
 		{
             Session[AppConst.SESSION_KEY] = session.token;
@@ -25,8 +25,11 @@ public partial class LoginPageController : MasterPage
 		} else
         {
             servererror.InnerText = "Der Nutzername oder das entsprechende Passwort ist inkorrekt.";
-        }
+        }*/
 
+        ServerResponse response = ServerViewletProvider.getInstance().getAuthenticationViewlet().tryLogIn(username, password);
+
+        servererror.InnerText = response.getResponseMessage() + " und -> "+response.getResponseStatus();
 	}
 
     protected override bool isSecurePage()

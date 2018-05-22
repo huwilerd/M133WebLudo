@@ -5,45 +5,45 @@ using System.Web;
 
 public interface LoginInterface
 {
-    bool tryLogIn(String username, String password);
+    ServerResponse tryLogIn(String username, String password);
 
-    void registerUser(String username, String password);
+    ServerResponse registerUser(String username, String password);
 
-    void updatePassword(String password);
+    ServerResponse updatePassword(String password);
 
-    void logout();
+    ServerResponse logout();
 }
 
 public interface ClientInterface
 {
-    void getOwnOpenHires();
+    ServerResponse getOwnOpenHires();
 
-    void getOwnHires();
+    ServerResponse getOwnHires();
 
-    void getAllGames();
+    ServerResponse getAllGames();
 }
 
 public interface PersonFunctionInterface
 {
-    void updatePerson();
+    ServerResponse updatePerson();
 
-    void updateHire();
+    ServerResponse updateHire();
 
-    void createHire();
+    ServerResponse createHire();
 }
 
 public interface EmployeeInterface
 {
-    void getAllClients();
+    ServerResponse getAllClients();
 
-    void getAllGames();
+    ServerResponse getAllGames();
 
-    void getAllHires();
+    ServerResponse getAllHires();
 
-    void addNewGame();
+    ServerResponse addNewGame();
 
-    void removeGame();
+    ServerResponse removeGame();
 
-    void closeHire();
+    ServerResponse closeHire();
 
 }
