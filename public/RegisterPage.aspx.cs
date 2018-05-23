@@ -15,11 +15,15 @@ public partial class _Default : MasterPage
 
     private void handleRegister()
     {
-        String email = EmailField.Text;
+        String mail = EmailField.Text;
         String password = PasswordField.Text;
-        User newUser = new User(-1, email, password);
+
+        ServerResponse response = ServerViewletProvider.getInstance().getAuthenticationViewlet().registerUser(mail, password);
+        servererror.InnerHtml = response.getResponseMessage();
+        /*User newUser = new User(-1, email, password);
         if(DataHandler.getInstance().doesUserExist(newUser) == null)
         {
+
             servererror.InnerHtml = "";
             User createdUser = DataHandler.getInstance().registerNewUser(newUser);
             Session session = SessionHandler.getInstance().tryLoginUser(createdUser.email, createdUser.password);
@@ -33,7 +37,7 @@ public partial class _Default : MasterPage
         else
         {
             servererror.InnerHtml = "Nutzer existiert bereits!";
-        }
+        }*/
         
     }
 

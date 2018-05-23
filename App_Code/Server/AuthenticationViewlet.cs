@@ -13,69 +13,106 @@ public class AuthenticationViewlet : MasterViewlet, LoginInterface
         throw new NotImplementedException();
     }
 
-    public ServerResponse registerUser(string username, string password)
+    public ServerResponse registerUser(string mail, string password)
     {
-        throw new NotImplementedException();
-    }
-
-    public ServerResponse tryLogIn(string username, string password)
-    {
-        return tryUnconnectedWay(username);
-
-        var connectionString = "Data Source=DESKTOP-QC9NDF8\\SQLEXPRESS; Initial Catalog=Ludothek; Integrated Security=true;";
-        System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(connectionString);
-
+        SqlConnection connection = getConnection();
         connection.Open();
 
-        SqlTransaction transaction = connection.BeginTransaction("Überweisung");
+        password = ServerUtil.hashPassword(password);
+        SqlCommand cmd = checkUser(mail, password);
 
-        SqlCommand cmd = new SqlCommand("SELECT * FROM Person WHERE Name=@username", connection, transaction);
-        cmd.Parameters.AddWithValue("@username", username);
+        SqlDataReader reader = cmd.ExecuteReader();
+
+        if (reader.Read())
+        {
+            //Login
+            return createResponse(1, "User bereits vorhanden", null, true);
+        }
+        else
+        {
+            //Register
+            reader.Close();
+
+
+            SqlCommand cme = new SqlCommand("INSERT INTO Benutzer(FK_Person, password, mail) VALUES (@id , @mail, @password)", connection);
+            cme.Parameters.AddWithValue("@mail", mail);
+            cme.Parameters.AddWithValue("@password", password);
+            cme.Parameters.AddWithValue("@id", createPerson());
+
+            int affectedRows = cme.ExecuteNonQuery();
+
+            if (affectedRows == 1)
+            {
+                return createResponse(1, "User wurde erstellt", null, true);
+            }
+            else
+            {
+                return createResponse(1, "User wurde nicht erstellt", null, true);
+            }
+
+        }
+    }
+
+    private int createPerson()
+    {
+        SqlConnection connection = getConnection();
+        if(connection.State != ConnectionState.Open)
+        {
+            connection.Open();
+        }
+
+        SqlCommand cmd = new SqlCommand("INSERT INTO Person(ID_Person, Name, Geschlecht, Geburtsdatum, Einstiegsdatum, FK_Mitgliedschaft) VALUES (1, '', 'Männlich', '2099-12-20', '2098-12-20', null)", connection);
+        int affectedRows = cmd.ExecuteNonQuery();
+
+        if (affectedRows == 1)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+
+    public ServerResponse tryLogIn(string mail, string password)
+    {
+        SqlConnection connection = getConnection();
+        if (connection.State != ConnectionState.Open)
+        {
+            connection.Open();
+        }
+
+        password = ServerUtil.hashPassword(password);
+
+        SqlCommand cmd = checkUser(mail, password);
 
         SqlDataReader reader = cmd.ExecuteReader();
 
         string foundUser = "";
-        int count = 0;
-        while(reader.Read())
+
+        if (reader.Read())
         {
-            foundUser = Convert.ToString(reader["Name"]);
-            count++;
+            foundUser = "lauft";
+        }
+        else
+        {
+            foundUser = "lauft ned";
         }
 
         connection.Close();
 
-        return createResponse(-1, "Serverseite noch nicht implementiert aber "+foundUser+" gefunden. ("+count+")", null, false);
+        return createResponse(1, "test", null, true);
     }
 
-    private ServerResponse tryUnconnectedWay(String username)
+
+    public SqlCommand checkUser(string mail, string password)
     {
-        SqlConnection connection = getConnection();
+        SqlCommand cmd = new SqlCommand("SELECT * FROM Benutzer WHERE mail=@mail AND password=@password", getConnection());
+        cmd.Parameters.AddWithValue("@mail", mail);
+        cmd.Parameters.AddWithValue("@password", password);
 
-        //Bindeglied von verbunden zu unverbundenen Objekten
-        SqlDataAdapter adapter = new SqlDataAdapter("SELECT * FROM Person", connection);
-
-        DataSet dataSet = new DataSet();
-        adapter.Fill(dataSet);
-
-        Console.WriteLine("Es hat " + dataSet.Tables.Count + " Tables gefunden");
-
-        DataTable personTable = dataSet.Tables[0];
-        Console.WriteLine("Es hat " + personTable.Rows.Count + " Personen in der Tabelle");
-
-        bool userExists = false;
-
-        for(int i=0; i < personTable.Rows.Count; i ++)
-        {
-            DataRow row = personTable.Rows[i];
-            string name = Convert.ToString(row["Name"]);
-            if(name.Equals(username))
-            {
-                userExists = true;
-                break;
-            }
-        }
-
-        return createResponse(-1, "Unverbundene Objekte", null, userExists);
+        return cmd;
     }
 
     public ServerResponse updatePassword(string password)

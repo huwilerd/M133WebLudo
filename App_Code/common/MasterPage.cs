@@ -102,6 +102,11 @@ public abstract class MasterPage : Page
         }
     }
 
+    protected bool isEmployee()
+    {
+        return false;
+    }
+
     protected String getSessionKey()
     {
         Object sessionValue = Session[AppConst.SESSION_KEY];
