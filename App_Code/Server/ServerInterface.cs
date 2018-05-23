@@ -14,6 +14,15 @@ public interface LoginInterface
     ServerResponse logout();
 }
 
+public interface SessionInterface
+{
+    ServerResponse loginUser(int fkPerson);
+
+    ServerResponse getSessionByToken(String sessionId);
+
+    ServerResponse hasToFillInInformation(Session session);
+}
+
 public interface ClientInterface
 {
     ServerResponse getOwnOpenHires();

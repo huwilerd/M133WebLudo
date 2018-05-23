@@ -71,10 +71,10 @@ public class DataProvider
             List<Session> sessions = getAllSession();
             foreach (Session session in sessions)
             {
-                if (session.token == token)
+               /* if (session.token == token)
                 {
                     return session;
-                }
+                }*/
             }
         }
         return null;
@@ -85,8 +85,8 @@ public class DataProvider
         Session session = getSessionFromToken(token);
         if(session != null)
         {
-            User user = getUserFromId(session.userId);
-            return user;
+            /*User user = getUserFromId(session.userId);
+            return user;*/
         }
         return null;
     }

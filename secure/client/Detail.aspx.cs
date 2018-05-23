@@ -15,8 +15,8 @@ public partial class _Default : SecureMasterPage
     protected override void setupPageWithSession(Session session)
     {
         base.setupPageWithSession(session);
-        int userId = session.userId;
-        User user = DataProvider.getInstance().getUserFromId(userId);
+        /*int userId = session.userId;
+        User user = DataProvider.getInstance().getUserFromId(userId);*/
         setupInformationBasedOnUrlParameters();
 
     }

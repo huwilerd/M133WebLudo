@@ -29,7 +29,15 @@ public partial class LoginPageController : MasterPage
 
         ServerResponse response = ServerViewletProvider.getInstance().getAuthenticationViewlet().tryLogIn(username, password);
 
-        servererror.InnerText = response.getResponseMessage() + " und -> "+response.getResponseStatus();
+        if(response.getResponseStatus())
+        {
+            Session currentSession = (Session) response.getResponseObject();
+            Session[AppConst.SESSION_KEY] = currentSession.sessionID;
+            servererror.InnerText = "";
+        }
+        servererror.InnerText = response.getResponseMessage();
+
+
 	}
 
     protected override bool isSecurePage()

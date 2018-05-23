@@ -8,6 +8,8 @@ using System.Web;
 /// </summary>
 public class User
 {
+    public static readonly String MAENNLICH_KEY = "Männlich";
+    public static readonly String WEIBLICH_KEY = "Weiblich";
     public int userId;
     public String email;
     public String password;

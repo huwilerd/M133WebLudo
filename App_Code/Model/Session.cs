@@ -9,15 +9,16 @@ using System.Web;
 public class Session
 {
 
-    public String token;
-    public int userId;
-    public bool status; //is user logged in
+    public readonly String sessionID;
+    public readonly int FK_Person;
+    public bool activeSession; //is user logged in
+    public DateTime lastActivity;
 
-    public Session(String token, int userId, bool status)
+    public Session(string sessionID, int fK_Person, bool activeSession, DateTime lastActivity)
     {
-        this.token = token;
-        this.userId = userId;
-        this.status = status;
+        this.sessionID = sessionID;
+        FK_Person = fK_Person;
+        this.activeSession = activeSession;
+        this.lastActivity = lastActivity;
     }
-
 }

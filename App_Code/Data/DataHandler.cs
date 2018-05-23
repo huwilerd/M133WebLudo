@@ -179,10 +179,10 @@ public class DataHandler
         List<Session> sessions = DataProvider.getInstance().getAllSession();
         foreach (Session session in sessions)
         {
-            if (session.token == token)
+            /*if (session.token == token)
             {
                 return session.status;
-            }
+            }*/
         }
         return false;
     }
@@ -196,20 +196,20 @@ public class DataHandler
         Session usersSession = null;
         foreach(Session session in sessions)
         {
-            if(session.userId == user.userId)
+            /*if(session.userId == user.userId)
             {
                 session.status = status;
                 usersSession = session;
                 break;
-            }
+            }*/
         }
 
         if(usersSession == null)
         {
             String token = DateTime.Now.ToString().GetHashCode().ToString("x");
-            Session newSession = new Session(token, user.userId, status);
+            /*Session newSession = new Session(token, user.userId, status);
             sessions.Add(newSession);
-            usersSession = newSession;
+            usersSession = newSession;*/
         }
 
         String newJson = DataHelper.createJsonFromObject(sessions);

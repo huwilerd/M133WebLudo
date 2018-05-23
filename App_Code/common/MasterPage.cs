@@ -17,7 +17,7 @@ public abstract class MasterPage : Page
     protected override void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
-        Console.WriteLine("hey");
+
         if (IsPostBack)
         {
             handlePostback();
@@ -49,6 +49,33 @@ public abstract class MasterPage : Page
         if (sessionKey != null)
         {
             System.Diagnostics.Debug.WriteLine("Key " + sessionKey + " vorhanden");
+
+            /* NEW SERVER IMPLEMENTATION */
+
+            SessionInterface sessionInterface = ServerViewletProvider.getInstance().GetSessionInterface();
+
+            ServerResponse response = sessionInterface.getSessionByToken(sessionKey);
+
+            if(response.getResponseStatus())
+            {
+                Session currentSession = (Session) response.getResponseObject();
+                if(currentSession.activeSession)
+                {
+                    ServerResponse fillInfoResponse = sessionInterface.hasToFillInInformation(currentSession);
+
+                    if(fillInfoResponse.getResponseStatus() && (bool) fillInfoResponse.getResponseObject())
+                    {
+                        redirectToEditPage(currentSession);
+                        return;
+                    }
+                   
+                    redirectUser(true);
+                    return;
+                }
+            }
+
+            redirectUser(false);
+
             if (DataHandler.getInstance().hasTokenActiveSession(sessionKey))
             {
                 User user = DataProvider.getInstance().getUserFromToken(sessionKey);
@@ -59,13 +86,7 @@ public abstract class MasterPage : Page
                 }
                 else
                 {
-                    if (getPageName() != AppConst.DETAIL_FORM_PAGE_NAME)
-                    {
-                        Response.Redirect("../secure/EditProfil.aspx");
-                    } else
-                    {
-                        setupPage(DataProvider.getInstance().getSessionFromToken(getSessionKey()));
-                    }
+                    //redirectToEditPage();
                 }
             }
             else
@@ -78,6 +99,18 @@ public abstract class MasterPage : Page
         {
             redirectUser(false);
             System.Diagnostics.Debug.WriteLine("No Sessionkey vorhanden");
+        }
+    }
+
+    private void redirectToEditPage(Session session)
+    {
+        if (getPageName() != AppConst.DETAIL_FORM_PAGE_NAME)
+        {
+            Response.Redirect("../secure/common/EditProfil.aspx");
+        }
+        else
+        {
+            setupPage(session);
         }
     }
 

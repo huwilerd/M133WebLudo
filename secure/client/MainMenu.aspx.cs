@@ -10,11 +10,11 @@ public partial class MainMenu : SecureMasterPage
 
     protected override void setupPageWithSession(Session session)
     {
-        UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
+        /*UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
         username.InnerHtml = detail.anrede + " " + detail.vorname + " " + detail.nachname;
 
         //default page
-        showCurrentHires(null, null);
+        showCurrentHires(null, null);*/
     }
 
     protected override void handlePostback()

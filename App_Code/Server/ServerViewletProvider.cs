@@ -21,6 +21,7 @@ public class ServerViewletProvider
     }
 
     private AuthenticationViewlet authenticationViewlet;
+    private SessionViewlet sessionViewlet;
 
     private ServerViewletProvider()
     {
@@ -34,6 +35,15 @@ public class ServerViewletProvider
             authenticationViewlet = new AuthenticationViewlet();
         }
         return authenticationViewlet;
+    }
+
+    public SessionInterface GetSessionInterface()
+    {
+        if(sessionViewlet == null)
+        {
+            sessionViewlet = new SessionViewlet();
+        }
+        return sessionViewlet;
     }
 
     

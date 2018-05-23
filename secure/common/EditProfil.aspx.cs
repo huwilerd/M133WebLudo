@@ -18,7 +18,7 @@ public partial class _Default : SecureMasterPage
         base.setupPage(session);
         if (session != null)
         {
-            UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
+           /* UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
 
                 if(detail != null)
                 {
@@ -38,7 +38,7 @@ public partial class _Default : SecureMasterPage
                   }
                 
                 User user = DataProvider.getInstance().getUserFromId(session.userId);
-                EmailField.Text = user.email;
+                EmailField.Text = user.email;*/
         } else {
             Response.Redirect("../public/LoginPage.aspx");
         }

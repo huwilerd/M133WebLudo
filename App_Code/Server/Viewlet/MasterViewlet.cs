@@ -21,6 +21,17 @@ public abstract class MasterViewlet
             string connectionString = builder.ConnectionString;
             connection = new SqlConnection(connectionString);
         }
+       
+        return connection;
+    }
+
+    protected SqlConnection getOpenConnection()
+    {
+        getConnection();
+        if (connection.State != System.Data.ConnectionState.Open)
+        {
+            connection.Open();
+        }
         return connection;
     }
 

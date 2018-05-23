@@ -38,7 +38,8 @@ public class SessionHandler
                 return DataHandler.getInstance().handleSessionForUser(existingUser, true);
             }
         }
-        return new Session("-1", -1, false);
+        //return new Session("-1", -1, false);
+        return null;
     }
 
     public Session logoutUser(String token)
@@ -46,9 +47,10 @@ public class SessionHandler
         Session session = DataProvider.getInstance().getSessionFromToken(token);
         if(session != null)
         {
-            User user = DataProvider.getInstance().getUserFromId(session.userId);
-            return DataHandler.getInstance().handleSessionForUser(user, false);
+            /*User user = DataProvider.getInstance().getUserFromId(session.userId);
+            return DataHandler.getInstance().handleSessionForUser(user, false);*/
         }
-        return new Session("-1", -1, false);
+        //return new Session("-1", -1, false);
+        return null;
     }
 }
