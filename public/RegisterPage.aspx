@@ -7,66 +7,142 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Registrieren</title>
     <link href="design/style.css" rel="stylesheet" />
+    <!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="design/login/images/icons/favicon.ico"/>
+    <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="design/login/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="design/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="design/login/vendor/animate/animate.css">
+    <!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="design/login/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="design/login/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="design/login/css/util.css">
+	<link rel="stylesheet" type="text/css" href="design/login/css/main.css">
+    <!--===============================================================================================-->
+
 </head>
 <body>
+    <div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100" style="padding-top:100px;">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="design/login/images/img-01.png" alt="IMG">
+				</div>
+
+				<form class="login100-form validate-form" id="loginForm" runat="server">
+					<span class="login100-form-title">
+						Member Register
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						
+                        <asp:TextBox ID="EmailField" runat="server" CssClass="input100" type="text" name="email" placeholder="Email"/>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						
+                        <asp:TextBox ID="EmailRepeatField" runat="server" CssClass="input100" type="text" name="email" placeholder="Repeat Email"/>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						
+                        <asp:TextBox ID="PasswordField" TextMode="Password" runat="server" CssClass="input100" type="password" name="pass" placeholder="Password"/>
+                        
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+					
+
+                    <div class="wrap-input100 validate-input" data-validate = "Password is required">
+						
+                        <asp:TextBox ID="PasswordRepeatField" TextMode="Password" runat="server" CssClass="input100" type="password" name="pass" placeholder="Repeat Password"/>
+                        
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
 
 
-    <form id="loginForm" runat="server">
+					<div class="container-login100-form-btn">
+						
+                        <input type="submit" value="Registrieren" id="registerButton" runat="server" class="login100-form-btn"/>
+                        
+                        
+					</div>
 
-      
-		<div id="mainContainer">
-            <table>
-                <tr>
-                    <td><h1>Registrieren:</h1></td>
-                </tr>
-		        <tr>
-                <td>
-				    <label for="EmailField">E-Mail:</label>	 
-                </td>
-                <td>     
-				    <asp:TextBox ID="EmailField" TextMode="Email" runat="server" />
-				    <asp:RequiredFieldValidator class="error" ID="requiredInputFieldValidator" ControlToValidate="EmailField" ErrorMessage="Bitte ausfüllen" runat="server" />
-                </td>
-		    </tr>
-               <tr><td>
-				    <label for="EmailRepeatField">E-Mail bestätigen:</label>
-		        </td>
-			    <td>
+					<div class="text-center p-t-12">
+						<span class="txt1">
+							Forgot
+						</span>
+						<a class="txt2" href="#">
+							Username / Password?
+						</a>
+					</div>
+                    <div id="validation">
+                        <div id="servererror" runat="server">
+
+                        </div>
+                        <asp:RequiredFieldValidator class="error" ID="requiredInputPwFieldValidator" ControlToValidate="PasswordField" ErrorMessage="Bitte eine korrekte E-mail angeben <br />" runat="server" />
+                        <asp:RequiredFieldValidator class="error" ID="requiredInputFieldValidator" ControlToValidate="EmailField" ErrorMessage="Bitte ein richtiges Passwort eingeben <br />" runat="server" />
+
+                        
+                        <asp:CompareValidator class="error" ID="CompareMailValidator" ControlToValidate="EmailRepeatField" ControlToCompare="EmailField" ErrorMessage="E-Mail Adressen stimmen nicht überein. <br />" type="String" runat="server" />
+                        <asp:CompareValidator class="error" ID="CompareValidator1" ControlToValidate="PasswordField" ControlToCompare="PasswordRepeatField" ErrorMessage="Passwörter stimmen nicht überein." type="String" runat="server" />
+                    </div>
+					<div class="text-center p-t-136" style="padding-top:10px;">
+						<a class="txt2" href="LoginPage.aspx">
+							Zurück zum Login
+							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true" style="transform: rotate(180deg);"></i>
+						</a>
+					</div>
+
                     
-				    <asp:TextBox ID="EmailRepeatField" TextMode="Email" runat="server" />
-                    <asp:RequiredFieldValidator class="error" ID="RequiredFieldValidator1" ControlToValidate="EmailRepeatField" ErrorMessage="Bitte ausfüllen" runat="server" />
-                    <asp:CompareValidator class="error" ID="CompareMailValidator" ControlToValidate="EmailRepeatField" ControlToCompare="EmailField" ErrorMessage="Felder stimmen nicht überein." type="String" runat="server" />
-                </td>
-		    </tr>
-		    <tr>
-			    <td>
-				    <label for="PasswordField" runat="server" />Password:</label>
-			    </td>
-			    <td>
-				    <asp:TextBox ID="PasswordField" TextMode="Password" runat="server" />
-				    <asp:RequiredFieldValidator class="error" ID="requiredInputPwFieldValidator" ControlToValidate="PasswordField" ErrorMessage="Bitte ausfüllen" runat="server" />
-                </td>
-		    </tr>
-                <tr>
-			    <td>
-				    <label for="PasswordRepeatField" runat="server" />Password:</label>
-			    </td>
-			    <td>
                     
-				    <asp:TextBox ID="PasswordRepeatField" TextMode="Password" runat="server" />
-                    <asp:RequiredFieldValidator class="error" ID="RequiredFieldValidator2" ControlToValidate="PasswordRepeatField" ErrorMessage="Bitte ausfüllen" runat="server" />
-                    <asp:CompareValidator class="error" ID="CompareValidator1" ControlToValidate="PasswordField" ControlToCompare="PasswordRepeatField" ErrorMessage="Felder stimmen nicht überein." type="String" runat="server" />
-                </td>
-		    </tr>
-		    <tr>
-			    <td><p class="error" id="servererror" runat="server"></p></td>
-			    <td>
-                    <a href="LoginPage.aspx"><   Zurück</a>
-				    <input type="submit" value="Registrieren" id="registerButton" runat="server"/>
-			    </td>
-		    </tr>
-		    </table>
-         </div>
-    </form>
+				</form>
+
+                
+				
+
+            </div>
+		</div>
+	</div>
+	
+    
+    <!--===============================================================================================-->	
+	<script src="design/login/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+	<script src="design/login/vendor/bootstrap/js/popper.js"></script>
+	<script src="design/login/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+	<script src="design/login/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+	<script src="design/login/vendor/tilt/tilt.jquery.min.js"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+
+	    
+
+	</script>
+    <!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+    
 </body>
 </html>

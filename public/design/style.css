@@ -52,6 +52,7 @@ td a:hover
     text-transform: none;
     
     
+    
 }
 #backLink a
 {
@@ -69,4 +70,12 @@ td a
 }
 .wietesFeld {
     width: 200px;
+    
+}
+#validation
+{
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+    
 }
