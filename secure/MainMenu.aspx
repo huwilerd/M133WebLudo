@@ -40,6 +40,18 @@
                 <div class="sideElement">
                     <asp:LinkButton ID="closedHiresLink" Text="Abgeschlossene Ausleihen" OnClick="showClosedHires" runat="server" />
                 </div>
+                <div class="sideElement">
+                    <asp:LinkButton ID="allEmployees" Text="Mitarbeiter Verwalten"  runat="server" />
+                </div>
+                <div class="sideElement">
+                    <asp:LinkButton ID="allGames" Text="Spiele Verwalten" runat="server" />
+                </div>
+                <div class="sideElement">
+                    <asp:LinkButton ID="allClients" Text="Kunden Verwalten" runat="server" />
+                </div>
+                <div class="sideElement">
+                    <asp:LinkButton ID="dashboard" Text="Gesamtübersicht" runat="server" />
+                </div>
             </div>
 
         </aside>

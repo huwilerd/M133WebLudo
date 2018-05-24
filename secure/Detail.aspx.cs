@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 public partial class _Default : SecureMasterPage
 {
 
-    private Game currentGame;
+    private Spiel currentGame;
     private Hire currentHire;
     private bool isVerlaengern;
 
@@ -26,7 +26,7 @@ public partial class _Default : SecureMasterPage
         int gameId = getGameId();
         if(gameId > 0)
         {
-            currentGame = DataProvider.getInstance().getGameFromId(gameId);
+            //currentGame = DataProvider.getInstance().getGameFromId(gameId);
             gameNameLabel.InnerText = currentGame.name + " ausleihen";
             gameDescriptionLabel.InnerText = currentGame.description;
 
@@ -39,7 +39,7 @@ public partial class _Default : SecureMasterPage
                     int hireId = getIntFromParameter("hire");
                     if(hireId > 0)
                     {
-                        currentHire = DataProvider.getInstance().getHireOfId(hireId);
+                       // currentHire = DataProvider.getInstance().getHireOfId(hireId);
                         currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
                         gameNameLabel.InnerText = "Ausleihe von " + currentGame.name + " verlängern";
                         tryButton.Value = "Verlängerung beantragen";
@@ -87,11 +87,11 @@ public partial class _Default : SecureMasterPage
     private void handleSave()
     {
         bool hasError = false;
-        User user = DataProvider.getInstance().getUserFromToken(getSessionKey());
+        User user = getCurrentSession().user;
 
         if (isVerlaengern)
         {
-            if (DataHandler.getInstance().canExpandHire(currentHire))
+            /*if (DataHandler.getInstance().canExpandHire(currentHire))
             {
                 currentHire.toDate = currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
                 DataHandler.getInstance().saveExpandedHire(currentHire);
@@ -99,7 +99,7 @@ public partial class _Default : SecureMasterPage
             {
                 hasError = true;
                 servererror.InnerText = "Die Ausleihe kann nicht mehr als drei Wochen verlängert werden.";
-            }
+            }*/
             
             
         }
@@ -122,7 +122,7 @@ public partial class _Default : SecureMasterPage
             Hire newHire = new Hire(-1, user.userId, currentGame.gameId, fromDate, toDate, 0, false);
 
             if(!hasError) { 
-                Hire savedHire = DataHandler.getInstance().saveHireOfUser(newHire);
+                //Hire savedHire = DataHandler.getInstance().saveHireOfUser(newHire);
             }
         }
         if (!hasError)

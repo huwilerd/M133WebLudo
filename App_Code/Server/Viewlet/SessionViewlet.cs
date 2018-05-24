@@ -25,13 +25,16 @@ public class SessionViewlet : MasterViewlet, SessionInterface
 
     public ServerResponse getSessionByToken(string sessionId)
     {
-        Session sessionFromId = ServerUtil.getSessionFromId(sessionId, getOpenConnection());
-        if(sessionFromId==null)
+        if (sessionId != null)
         {
-            return createResponse(1, "Keine Session für diese Id gefunden", null, false);
+            Session sessionFromId = ServerUtil.getSessionFromId(sessionId, getOpenConnection());
+            if (sessionFromId != null)
+            {
+                return createResponse(1, "Session erfolgreich gefunden", sessionFromId, true);
+                
+            }
         }
-        return createResponse(1, "Session erfolgreich gefunden", sessionFromId, true);
-        
+        return createResponse(1, "Keine Session für diese Id gefunden", null, false);
     }
 
     public ServerResponse hasToFillInInformation(Session session)
@@ -64,9 +67,9 @@ public class SessionViewlet : MasterViewlet, SessionInterface
     private Session updateSessionActivity(Session session)
     {
         session.lastActivity = DateTime.Now;
-        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Session SET lastActivity=@lastActivity WHERE sessionID=@SessionID",
-            new string[] {"@SessionID", "@lastActivity" },
-            new object[] { session.sessionID,session.lastActivity});
+        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Session SET lastActivity=@lastActivity, activeSession=@activeSession WHERE sessionID=@SessionID",
+            new string[] {"@SessionID", "@lastActivity", "@activeSession" },
+            new object[] { session.sessionID,session.lastActivity, true/*falls false wieder auf true!*/});
         if(!executionState)
         {
             throw new Exception("Session-LastAktivität konnte nicht gesetzt werden.");
@@ -79,5 +82,17 @@ public class SessionViewlet : MasterViewlet, SessionInterface
         return Guid.NewGuid().ToString();
     }
 
-    
+    public ServerResponse getPersonFromSession(Session session)
+    {
+        Person person = ServerUtil.getPersonFromId(session.FK_Person, getOpenConnection());
+        return person != null ? createResponse(1, "Person gefunden", person, true) : createResponse(1, "Person nicht gefunden", null, false);
+    }
+
+    public ServerResponse destroySession(Session session)
+    {
+        bool destroyState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Session SET activeSession=@activeSession WHERE sessionID=@sessionID",
+            new string[] { "@activeSession", "@sessionID" }, new object[] { false, session.sessionID });
+        
+        return destroyState ? createResponse(1, "Session erfolgreich zerstört", null, true) : createResponse(1, "Session konnte nicht zerstört werden", null, false);
+    }
 }

@@ -19,7 +19,7 @@ public partial class public_ForgotPage : MasterPage
         String newPasswort = PasswortField.Text;
 
         User tmpUser = new User(-1, forgotEmail, "");
-        User foundUser = DataHandler.getInstance().doesUserExist(tmpUser);
+        /*User foundUser = DataHandler.getInstance().doesUserExist(tmpUser);
         if(foundUser != null)
         {
             servererror.InnerText = "";
@@ -30,7 +30,7 @@ public partial class public_ForgotPage : MasterPage
         else
         {
             servererror.InnerText = "Es wurde kein Nutzer mit der angegeben E-Mail gefunden!";
-        }
+        }*/
         
 
     }

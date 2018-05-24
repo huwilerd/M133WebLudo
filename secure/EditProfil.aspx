@@ -22,27 +22,18 @@
                 </td>
                 <td>     
                     <select id="AnredeField" runat="server" required>
-                        <option value="Herr" selected="selected">Herr</option>
-                        <option value="Frau">Frau</option>
+                        <option value="Männlich" selected="selected">Herr</option>
+                        <option value="Weiblich">Frau</option>
                     </select>
                 </td>
 		        </tr>
 		        <tr>
                 <td>
-				    <label for="VornameField">Vorname:</label>	 
+				    <label for="NameField">Name:</label>	 
                 </td>
                 <td>     
-				    <asp:TextBox ID="VornameField" runat="server" />
-				    <asp:RequiredFieldValidator class="error" ID="requiredInputVornameFieldValidator" ControlToValidate="VornameField" ErrorMessage="Bitte ausfüllen" runat="server" />
-                </td>
-		        </tr>
-                <tr>
-                <td>
-				    <label for="NachnameField">Nachname:</label>	 
-                </td>
-                <td>     
-				    <asp:TextBox ID="NachnameField" runat="server" />
-				    <asp:RequiredFieldValidator class="error" ID="requiredInputNachnameFieldValidator" ControlToValidate="NachnameField" ErrorMessage="Bitte ausfüllen" runat="server" />
+				    <asp:TextBox ID="NameField" runat="server" />
+				    <asp:RequiredFieldValidator class="error" ID="requiredInputNameFieldValidator" ControlToValidate="NameField" ErrorMessage="Bitte ausfüllen" runat="server" />
                 </td>
 		        </tr>
                 <tr>
@@ -52,16 +43,6 @@
                 <td>     
 				    <asp:TextBox ID="GeburtsdatumField" TextMode="Date" runat="server" />
 				    <asp:RequiredFieldValidator class="error" ID="RequiredFieldValidator3" ControlToValidate="GeburtsdatumField" ErrorMessage="Bitte ausfüllen" runat="server" />
-                </td>
-		        </tr>
-
-                <tr>
-                <td>
-				    <label for="TelefonField">Telefon:</label>	 
-                </td>
-                <td>     
-				    <asp:TextBox ID="TelefonField" TextMode="Phone" runat="server" />
-				    <asp:RequiredFieldValidator class="error" ID="RequiredFieldValidator4" ControlToValidate="TelefonField" ErrorMessage="Bitte ausfüllen" runat="server" />
                 </td>
 		        </tr>
 

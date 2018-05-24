@@ -12,6 +12,8 @@ public interface LoginInterface
     ServerResponse updatePassword(String password);
 
     ServerResponse logout();
+
+    ServerResponse isEmailInUse(String email);
 }
 
 public interface SessionInterface
@@ -21,24 +23,30 @@ public interface SessionInterface
     ServerResponse getSessionByToken(String sessionId);
 
     ServerResponse hasToFillInInformation(Session session);
+
+    ServerResponse getPersonFromSession(Session session);
+
+    ServerResponse destroySession(Session session);
 }
 
 public interface ClientInterface
 {
-    ServerResponse getOwnOpenHires();
+    ServerResponse getOwnOpenHires(Session session);
 
-    ServerResponse getOwnHires();
+    ServerResponse getOwnHires(Session session);
 
     ServerResponse getAllGames();
 }
 
 public interface PersonFunctionInterface
 {
-    ServerResponse updatePerson();
+    ServerResponse updatePerson(Person person);
 
-    ServerResponse updateHire();
+    ServerResponse updateUser(User user);
 
-    ServerResponse createHire();
+    ServerResponse updateHire(Hire hire);
+
+    ServerResponse createHire(Session session, Hire hire);
 }
 
 public interface EmployeeInterface
@@ -49,10 +57,15 @@ public interface EmployeeInterface
 
     ServerResponse getAllHires();
 
-    ServerResponse addNewGame();
+    ServerResponse addNewGame(Spiel newSpiel);
 
-    ServerResponse removeGame();
+    ServerResponse removeGame(Spiel spiel);
 
-    ServerResponse closeHire();
+    ServerResponse closeHire(Hire hire);
 
+}
+
+public interface AdminInterface
+{
+    ServerResponse getAllEmployees();
 }

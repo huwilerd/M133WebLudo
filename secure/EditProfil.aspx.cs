@@ -18,27 +18,28 @@ public partial class _Default : SecureMasterPage
         base.setupPage(session);
         if (session != null)
         {
-           /* UserDetail detail = DataProvider.getInstance().getUserDetail(session.userId);
+            Person currentPerson = getCurrentPerson();
 
-                if(detail != null)
-                {
-                    AnredeField.Value = AnredeField.Items.FindByText(detail.anrede).Value;
-                    VornameField.Text = detail.vorname;
-                    NachnameField.Text = detail.nachname;
-                    GeburtsdatumField.Text = detail.geburtsdatum;
-                    TelefonField.Text = detail.telefon;
-                    StrasseField.Text = detail.strasse;
-                    PLZField.Text = detail.postleitzahl;
-                    OrtField.Text = detail.ort;
-                    LandField.Text = detail.land;
-                    showAccountFields(true);
-                } else
-                  {
-                    showAccountFields(false);
-                  }
-                
-                User user = DataProvider.getInstance().getUserFromId(session.userId);
-                EmailField.Text = user.email;*/
+            if(currentPerson!=null)
+            {
+                AnredeField.Value = AnredeField.Items.FindByText(currentPerson.Geschlecht == "Männlich" ? "Herr" : "Frau").Value;
+                NameField.Text = currentPerson.Name;
+                GeburtsdatumField.Text = currentPerson.Geburtsdatum.ToString();
+                StrasseField.Text = currentPerson.strasse;
+                PLZField.Text = Convert.ToString(currentPerson.postleitzahl);
+                OrtField.Text = currentPerson.ort;
+                LandField.Text = currentPerson.land;
+                showAccountFields(false);
+            }
+
+            Session currentSession = getCurrentSession();
+
+            User currentUser = currentSession.user;
+            if(currentUser!=null)
+            {
+                EmailField.Text = currentUser.email;
+            }
+
         } else {
             Response.Redirect("../public/LoginPage.aspx");
         }
@@ -69,41 +70,42 @@ public partial class _Default : SecureMasterPage
     private void handleSave()
     {
         bool hasError = false;
-        User user = DataProvider.getInstance().getUserFromToken(getSessionKey());
+
+        Session session = getCurrentSession();
+        Person person = getCurrentPerson();
 
         String anrede = Request.Form["AnredeField"];
-        String vorname = VornameField.Text;
-        String nachname = NachnameField.Text;
+        String name = NameField.Text;
         String geburtsdatum = GeburtsdatumField.Text;
-        String telefon = TelefonField.Text;
         String strasse = StrasseField.Text;
         String plz = PLZField.Text;
         String ort = OrtField.Text;
         String land = LandField.Text;
 
-        //Validierung Felder
-        if(DataHelper.validateField(anrede))
-        {
-            hasError = true;
-            servererror.InnerText = "Anrede bitte ausfüllen";
-        }
-
-        UserDetail detail = new UserDetail(user.userId, anrede, vorname, nachname, geburtsdatum, telefon, strasse, plz, ort, land);
-
-
+        person.Geschlecht = anrede;
+        person.Name = name;
+        person.Geburtsdatum = Convert.ToDateTime(geburtsdatum);
+        person.strasse = strasse;
+        person.postleitzahl = Convert.ToInt32(plz);
+        person.ort = ort;
+        person.land = land;
+       
         if (PasswortField.Visible && EmailField.Visible)
         {
+            User currentLoggedInUser = session.user;
 
-            String originalEmail = user.email;
+            String originalEmail = currentLoggedInUser.email;
             String inputMail = EmailField.Text;
 
             bool userHasChanges = false;
             if (!originalEmail.Equals(inputMail))
             {
-                User searchedUser = DataHandler.getInstance().doesUserExist(new User(-1, inputMail, ""));
-                if (searchedUser == null)
+
+                ServerResponse emailUseResponse = GetViewletProvider().getAuthenticationViewlet().isEmailInUse(inputMail);
+
+                if(!emailUseResponse.getResponseStatus())
                 {
-                    user.email = inputMail;
+                    currentLoggedInUser.email = inputMail;
                     userHasChanges = true;
                 }
                 else
@@ -115,7 +117,7 @@ public partial class _Default : SecureMasterPage
 
             if (PasswortField.Text != "")
             {
-                user.password = PasswortField.Text;
+                currentLoggedInUser.password = PasswortField.Text;
                 userHasChanges = true;
             }
 
@@ -123,14 +125,14 @@ public partial class _Default : SecureMasterPage
             {
                 if (!hasError)
                 {
-                    DataHandler.getInstance().updateUser(user);
+                    GetViewletProvider().GetPersonViewlet().updateUser(currentLoggedInUser);
                 }
             }
         }
 
         if (!hasError)
         {
-            DataHandler.getInstance().saveDetailOfUser(detail);
+            GetViewletProvider().GetPersonViewlet().updatePerson(person);
             Response.Redirect("../secure/MainMenu.aspx");
         }
     }

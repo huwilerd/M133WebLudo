@@ -34,7 +34,7 @@ public class ServerUtil
 
         bool executionState = CommandUtil.create(openConnection).executeSingleQuery(ServerConst.INSERT_PERSON_QUERY,
             new string[] { "@id_person", "@name", "@geschlecht", "@geburtsdatum", "@einstiegsdatum", "@mitgliedschaft" },
-            new object[] { generatedPersonId, "", User.MAENNLICH_KEY, "1900-02-10", "1900-02-11", DBNull.Value });
+            new object[] { generatedPersonId, "", User.MAENNLICH_KEY, "1900-02-10", DateTime.Now, DBNull.Value });
 
         return executionState ? generatedPersonId : -1;
     }
@@ -47,7 +47,9 @@ public class ServerUtil
         {
             return null;
         }
-        return ConvertUtil.getSession(sessionResult[0]);
+        Session session = ConvertUtil.getSession(sessionResult[0]);
+        session.user = getUserFromId(session.FK_Person, openConnection);
+        return session;
     }
 
     public static Person getPersonFromId(int personID, SqlConnection openConnection)
@@ -59,6 +61,17 @@ public class ServerUtil
             return null;
         }
         return ConvertUtil.getPerson(personResult[0]);
+    }
+
+    public static User getUserFromId(int personID, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> userResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Benutzer WHERE FK_Person=@idPerson",
+            new string[] { "@idPerson" }, new object[] { personID });
+        if (userResult.Count == 0)
+        {
+            return null;
+        }
+        return ConvertUtil.getUser(userResult[0]);
     }
 
     public static bool doesUserExist(String mail, SqlConnection openConnection)

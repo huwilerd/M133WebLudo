@@ -8,6 +8,11 @@ using System.Data.SqlClient;
 /// </summary>
 public class AuthenticationViewlet : MasterViewlet, LoginInterface
 {
+    public ServerResponse isEmailInUse(string email)
+    {
+        bool isMailInUse = ServerUtil.doesUserExist(email, getOpenConnection());
+        return createResponse(1, "Email is in use" + isMailInUse, isMailInUse, isMailInUse);
+    }
 
     public ServerResponse logout()
     {

@@ -18,8 +18,20 @@ public partial class _Default : MasterPage
         String mail = EmailField.Text;
         String password = PasswordField.Text;
 
-        ServerResponse response = ServerViewletProvider.getInstance().getAuthenticationViewlet().registerUser(mail, password);
+        ServerResponse response = GetViewletProvider().getAuthenticationViewlet().registerUser(mail, password);
         servererror.InnerHtml = response.getResponseMessage();
+        if(response.getResponseStatus())
+        {
+            ServerResponse loginResponse = GetViewletProvider().getAuthenticationViewlet().tryLogIn(mail, password);
+            if (loginResponse.getResponseStatus())
+            {
+                Session currentSession = (Session)loginResponse.getResponseObject();
+                Session[AppConst.SESSION_KEY] = currentSession.sessionID;
+                servererror.InnerText = "";
+            }
+
+            Response.Redirect("../public/LoginPage.aspx");
+        }
         /*User newUser = new User(-1, email, password);
         if(DataHandler.getInstance().doesUserExist(newUser) == null)
         {

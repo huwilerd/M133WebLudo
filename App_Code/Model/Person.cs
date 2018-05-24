@@ -15,6 +15,10 @@ public class Person
     public DateTime Geburtsdatum;
     public DateTime Einstiegsdatum;
     public Mitgliedschaft mitgliedschaft;
+    public String strasse;
+    public int postleitzahl;
+    public String ort;
+    public String land;
 
     public Person(int iD_Person, string name, string geschlecht, DateTime geburtsdatum, DateTime einstiegsdatum)
     {
@@ -33,5 +37,28 @@ public class Person
         Geburtsdatum = geburtsdatum;
         Einstiegsdatum = einstiegsdatum;
         this.mitgliedschaft = mitgliedschaft;
+    }
+
+    public Person(int iD_Person, string name, string geschlecht, DateTime geburtsdatum, DateTime einstiegsdatum, Mitgliedschaft mitgliedschaft, string strasse, int postleitzahl, string ort, string land) : this(iD_Person, name, geschlecht, geburtsdatum, einstiegsdatum, mitgliedschaft)
+    {
+        ID_Person = iD_Person;
+        Name = name;
+        Geschlecht = geschlecht;
+        Geburtsdatum = geburtsdatum;
+        Einstiegsdatum = einstiegsdatum;
+        this.mitgliedschaft = mitgliedschaft;
+        this.strasse = strasse;
+        this.postleitzahl = postleitzahl;
+        this.ort = ort;
+        this.land = land;
+    }
+
+    public object getMitgliedschaftsId()
+    {
+        if(mitgliedschaft==null)
+        {
+            return DBNull.Value;
+        }
+        return mitgliedschaft.ID_Mitgliedschaft;
     }
 }

@@ -8,22 +8,20 @@ using System.Web;
 /// </summary>
 public class Hire
 {
-    public int hireId;
-    public int userId;
-    public int gameId;
-    public DateTime fromDate;
-    public DateTime toDate;
-    public int expandCount;
-    public bool closed;
+    public int ID_Ausleihe;
+    public int FK_Person;
+    public int FK_Spiel;
+    public DateTime VonDatum;
+    public DateTime BisDatum;
+    public bool Bezahlt;
 
-    public Hire(int hireId, int userId, int gameId, DateTime fromDate, DateTime toDate, int expandCount, bool closed)
+    public Hire(int iD_Ausleihe, int fK_Person, int fK_Spiel, DateTime vonDatum, DateTime bisDatum, bool bezahlt)
     {
-        this.hireId = hireId;
-        this.userId = userId;
-        this.gameId = gameId;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-        this.expandCount = expandCount;
-        this.closed = closed;
+        ID_Ausleihe = iD_Ausleihe;
+        FK_Person = fK_Person;
+        FK_Spiel = fK_Spiel;
+        VonDatum = vonDatum;
+        BisDatum = bisDatum;
+        Bezahlt = bezahlt;
     }
 }

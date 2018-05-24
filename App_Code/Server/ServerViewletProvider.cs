@@ -22,6 +22,7 @@ public class ServerViewletProvider
 
     private AuthenticationViewlet authenticationViewlet;
     private SessionViewlet sessionViewlet;
+    private PersonViewlet personViewlet;
 
     private ServerViewletProvider()
     {
@@ -46,5 +47,14 @@ public class ServerViewletProvider
         return sessionViewlet;
     }
 
-    
+    public PersonViewlet GetPersonViewlet()
+    {
+        if(personViewlet == null)
+        {
+            personViewlet = new PersonViewlet();
+        }
+        return personViewlet;
+    }
+
+
 }

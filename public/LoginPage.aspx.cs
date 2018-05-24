@@ -17,16 +17,7 @@ public partial class LoginPageController : MasterPage
 	{
 		String username = EmailField.Text;
 		String password = PasswordField.Text;
-        /*Session session = SessionHandler.getInstance().tryLoginUser(username, password);
-        if (session.status)
-		{
-            Session[AppConst.SESSION_KEY] = session.token;
-            servererror.InnerText = "";
-		} else
-        {
-            servererror.InnerText = "Der Nutzername oder das entsprechende Passwort ist inkorrekt.";
-        }*/
-
+        
         ServerResponse response = ServerViewletProvider.getInstance().getAuthenticationViewlet().tryLogIn(username, password);
 
         if(response.getResponseStatus())

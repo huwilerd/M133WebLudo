@@ -76,24 +76,6 @@ public abstract class MasterPage : Page
 
             redirectUser(false);
 
-            if (DataHandler.getInstance().hasTokenActiveSession(sessionKey))
-            {
-                User user = DataProvider.getInstance().getUserFromToken(sessionKey);
-                UserDetail detail = DataHandler.getInstance().getDetailOfUser(user);
-                if (detail != null)
-                {
-                    redirectUser(true);
-                }
-                else
-                {
-                    //redirectToEditPage();
-                }
-            }
-            else
-            {
-                redirectUser(false);
-            }
-
         }
         else
         {
@@ -106,7 +88,7 @@ public abstract class MasterPage : Page
     {
         if (getPageName() != AppConst.DETAIL_FORM_PAGE_NAME)
         {
-            Response.Redirect("../secure/common/EditProfil.aspx");
+            Response.Redirect("../secure/EditProfil.aspx");
         }
         else
         {
@@ -131,7 +113,7 @@ public abstract class MasterPage : Page
         }
         else
         {
-            setupPage(DataProvider.getInstance().getSessionFromToken(getSessionKey()));
+            setupPage(getCurrentSession());
         }
     }
 
@@ -156,5 +138,30 @@ public abstract class MasterPage : Page
     }
 
     protected abstract bool isSecurePage();
+
+    protected ServerViewletProvider GetViewletProvider()
+    {
+        return ServerViewletProvider.getInstance();
+    }
+
+    protected Session getCurrentSession()
+    {
+        ServerResponse response = GetViewletProvider().GetSessionInterface().getSessionByToken(getSessionKey());
+        if(response.getResponseStatus())
+        {
+            return (Session)response.getResponseObject();
+        }
+        return null;
+    }
+
+    protected Person getCurrentPerson()
+    {
+        ServerResponse response = GetViewletProvider().GetSessionInterface().getPersonFromSession(getCurrentSession());
+        if(response.getResponseStatus())
+        {
+            return (Person)response.getResponseObject();
+        }
+        return null;
+    }
 
 }

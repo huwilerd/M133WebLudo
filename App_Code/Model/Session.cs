@@ -13,6 +13,7 @@ public class Session
     public readonly int FK_Person;
     public bool activeSession; //is user logged in
     public DateTime lastActivity;
+    public User user;
 
     public Session(string sessionID, int fK_Person, bool activeSession, DateTime lastActivity)
     {
@@ -20,5 +21,14 @@ public class Session
         FK_Person = fK_Person;
         this.activeSession = activeSession;
         this.lastActivity = lastActivity;
+    }
+
+    public Session(string sessionID, int fK_Person, bool activeSession, DateTime lastActivity, User user)
+    {
+        this.sessionID = sessionID;
+        FK_Person = fK_Person;
+        this.activeSession = activeSession;
+        this.lastActivity = lastActivity;
+        this.user = user;
     }
 }

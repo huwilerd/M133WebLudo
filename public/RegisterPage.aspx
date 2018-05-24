@@ -33,7 +33,7 @@
 					<img src="design/login/images/img-01.png" alt="IMG">
 				</div>
 
-				<form class="login100-form validate-form" id="loginForm" runat="server">
+				<form class="login100-form validate-form" id="registerForm" runat="server">
 					<span class="login100-form-title">
 						Member Register
 					</span>
@@ -79,20 +79,11 @@
 
 
 					<div class="container-login100-form-btn">
-						
-                        <input type="submit" value="Registrieren" id="registerButton" runat="server" class="login100-form-btn"/>
-                        
-                        
+
+                        <input type="submit" value="Registrieren" id="registerButton" runat="server" class="login100-form-btn" />
+                         
 					</div>
 
-					<div class="text-center p-t-12">
-						<span class="txt1">
-							Forgot
-						</span>
-						<a class="txt2" href="#">
-							Username / Password?
-						</a>
-					</div>
                     <div id="validation">
                         <div id="servererror" runat="server">
 

@@ -10,7 +10,7 @@ public partial class secure_Logout : SecureMasterPage
 
     protected override void setupPage(Session session)
     {
-        Session newSession = SessionHandler.getInstance().logoutUser(getSessionKey());
+        GetViewletProvider().GetSessionInterface().destroySession(session);
         refresh();
     }
 }

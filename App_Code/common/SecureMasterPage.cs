@@ -24,7 +24,7 @@ public abstract class SecureMasterPage : MasterPage
     protected String loadNewestGamesIntoContainer()
     {
         StringBuilder htmlBuilder = new StringBuilder();
-        List<Game> games = DataProvider.getInstance().getAllGame();
+        /*List<Game> games = DataProvider.getInstance().getAllGame();
         foreach(Game game in games)
         {
             htmlBuilder.Append(createGameElement(game, "Ausleihe reservieren", game.anzahl > 0));
@@ -32,15 +32,15 @@ public abstract class SecureMasterPage : MasterPage
         if(games.Count == 0)
         {
             htmlBuilder.Append("<b>Es sind aktuell leider keine Spiele vorhanden.");
-        }
+        }*/
         return htmlBuilder.ToString();
     }
 
     protected String loadCurrentHiresIntoContainer()
     {
-        int userId = DataProvider.getInstance().getUserFromToken(getSessionKey()).userId;
+        //int userId = DataProvider.getInstance().getUserFromToken(getSessionKey()).userId;
         StringBuilder htmlBuilder = new StringBuilder();
-        List<Hire> hires = DataProvider.getInstance().getAllOpenHiresOfClient(userId);
+        /*List<Hire> hires = DataProvider.getInstance().getAllOpenHiresOfClient(userId);
         foreach(Hire hire in hires)
         {
             htmlBuilder.Append(createHireElement(hire, "Jetzt verlängern"));
@@ -48,15 +48,15 @@ public abstract class SecureMasterPage : MasterPage
         if (hires.Count == 0)
         {
             htmlBuilder.Append("<b>Es sind noch keine Ausleihen vorhanden.</b>");
-        }
+        }*/
         return htmlBuilder.ToString();
     }
 
     protected String loadClosedHiresIntoContainer()
     {
-        int userId = DataProvider.getInstance().getUserFromToken(getSessionKey()).userId;
+        //int userId = DataProvider.getInstance().getUserFromToken(getSessionKey()).userId;
         StringBuilder htmlBuilder = new StringBuilder();
-        List<Hire> hires = DataProvider.getInstance().getAllClosedHiresOfClient(userId);
+        /*List<Hire> hires = DataProvider.getInstance().getAllClosedHiresOfClient(userId);
         foreach (Hire hire in hires)
         {
             htmlBuilder.Append(createHireElement(hire, "Abgeschlossen"));
@@ -64,23 +64,23 @@ public abstract class SecureMasterPage : MasterPage
         if (hires.Count == 0)
         {
             htmlBuilder.Append("<b>Es sind noch keine abgeschlossenen Ausleihen vorhanden.</b>");
-        }
+        }*/
         return htmlBuilder.ToString();
     }
 
     private String createHireElement(Hire hire, String buttonText)
     {
-        Game game = DataProvider.getInstance().getGameFromId(hire.gameId);
+        //Game game = DataProvider.getInstance().getGameFromId(hire.gameId);
         StringBuilder html = new StringBuilder();
-        html.Append("<div class=\"flexItem\">");
+        /*html.Append("<div class=\"flexItem\">");
         html.Append("<div class=\"mainItemImage\"> <img src=\"" + game.imageLink + "\" /></div>");
         html.Append("<div class=\"mainItemTitle\"><h1>" + game.name + "</h1><p>Vermietung gültig von <b>"+ hire.fromDate.ToString("dd.MM.yyyy") +"</b> bis <b>"+ hire.toDate.ToString("dd.MM.yyyy") +"</b></p></div>");
         html.Append("<a href=\"Detail.aspx?id=" + game.gameId + "&hire="+hire.hireId+"&action=1\" class=\"button\" style=\"vertical-align:middle\"><span>" + buttonText + "</span></button>");
-        html.Append("</div></a>");
+        html.Append("</div></a>");*/
         return html.ToString();
     }
 
-    private String createGameElement(Game game, String buttonText, bool active)
+    private String createGameElement(Spiel game, String buttonText, bool active)
     {
         StringBuilder html = new StringBuilder();
         html.Append("<div class=\"flexItem\">");
