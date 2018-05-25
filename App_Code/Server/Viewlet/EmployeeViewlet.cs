@@ -36,6 +36,29 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
         }
     }
 
+    public ServerResponse deleteUser(int userId)
+    {
+        Person person = ServerUtil.getPersonFromId(userId, getOpenConnection());
+        if(person == null)
+        {
+            return createResponse(1, "Benutzer ist nicht vorhanden", null, false);
+        }
+
+        Session sessionOfPerson = ServerUtil.getSessionFromPerson(person.ID_Person, getOpenConnection());
+        if(sessionOfPerson==null)
+        {
+            return createResponse(1, "Benutzer besitzt keine Session", null, false);
+        }
+
+
+        if(ServerUtil.deletePerson(person, sessionOfPerson, getOpenConnection()))
+        {
+            return createResponse(1, "Person wurde gelöscht", null, true);
+        }
+
+        return createResponse(1, "Person konnte nicht gelöscht werden", null, false);
+    }
+
     public ServerResponse getAllClients()
     {
         List<Dictionary<String, Object>> clientData = CommandUtil.create(getOpenConnection()).executeReader("Select * From Person", null, null);
@@ -63,9 +86,38 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
         return createResponse(1, "Alle Ausleihen", hireList, true);
     }
 
-    public ServerResponse removeGame(Spiel spiel)
+    public ServerResponse getAllUsers()
     {
-        throw new NotImplementedException();
+        List<User> userList = ServerUtil.getAllUsers(getOpenConnection());
+        return createResponse(1, "Alle Nutzer", userList, true);
+    }
+
+    public ServerResponse logoutUser(int userId)
+    {
+        if(ServerUtil.isFilialleiter(userId, getOpenConnection()))
+        {
+            return createResponse(1, "Filialleiter können nicht von Mitarbeitern ausgeloggt werden.", null, false);
+        }
+
+        Session session = ServerUtil.getSessionFromPerson(userId, getOpenConnection());
+        if(session!=null)
+        {
+            bool logoutSuceeded = ServerUtil.logoutUser(userId, getOpenConnection());
+            return logoutSuceeded ? createResponse(1, "User erfolgreich abgemeldet", null, true) : createResponse(1, "User konnte nicht abgemeldet werden", null, false);
+        }
+
+        return createResponse(1, "Session existiert nicht", null, false);
+    }
+
+    public ServerResponse removeGame(int idSpiel)
+    {
+        bool isGameInUse = ServerUtil.checkIfGameIsUsed(idSpiel, getOpenConnection());
+        if (isGameInUse)
+        {
+            return createResponse(1, "Spiel kann nicht gelöscht werden, da es in Verwendung ist.", null, false);
+        }
+        bool gameDeletedState = ServerUtil.deleteGame(idSpiel, getOpenConnection());
+        return createResponse(1, "Spiel Löschstatus: " + gameDeletedState, null, gameDeletedState);
     }
 
     public ServerResponse removeHire(int idHire)
@@ -79,6 +131,23 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
             new string[] { "@idAusleihe" },
             new object[] { idHire });
         return createResponse(1, "Ausleihe gelöscht", null, executionState);
+    }
+
+    public ServerResponse reopenHire(int idHire)
+    {
+        Hire toOpenHire = ServerUtil.getHireFromId(idHire, getOpenConnection());
+        ValidateResult validateResult = ValidateUtil.getInstance().validateBeforeOpeningHire(toOpenHire);
+        if (validateResult.validateStatus)
+        {
+            bool closeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("Update Ausleihe Set Bezahlt=0 Where ID_Ausleihe=@idAusleihe",
+            new string[] { "@idAusleihe" },
+            new object[] { toOpenHire.ID_Ausleihe });
+            return closeState ? createResponse(1, "Ausleihe erfolgreich wiedereröffnet", null, true) : createResponse(1, "Ausleihe konnte nicht wiedereröffnet werden", null, false);
+        }
+        else
+        {
+            return createResponse(1, validateResult.validateMessage, null, false);
+        }
     }
 
     public ServerResponse updateGame(Spiel updatedSpiel)

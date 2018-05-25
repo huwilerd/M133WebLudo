@@ -28,6 +28,60 @@ public class ServerUtil
         return sb.ToString();
     }
 
+    public static Person anonymizePerson(Person person)
+    {
+        person.Name = "Unbekannt";
+        person.strasse = "Unbekannt";
+        person.ort = "Unbekannt";
+        person.postleitzahl = 0;
+        person.land = "Unbekannt";
+        return person;
+    }
+
+    public static bool deletePerson(Person person, Session session, SqlConnection openConnection)
+    {
+        if (!isAngestellt(person.ID_Person, openConnection))
+        {
+            ServerResponse usersHires = ((ClientInterface)ServerViewletProvider.getInstance().GetPersonViewlet()).getOwnHires(session);
+            if (usersHires.getResponseStatus())
+            {
+                List<Hire> usersHireList = (List<Hire>)usersHires.getResponseObject();
+                if (usersHireList.Count > 0)
+                {
+                    // Check if hire is still open, this isn't good
+                    for (int i = 0; i < usersHireList.Count; i++)
+                    {
+                        Hire hire = usersHireList[i];
+                        if (!hire.Bezahlt)
+                        {
+                            return false;
+                        }
+                    }
+                    person = anonymizePerson(person);
+                    ServerResponse updateResponse = ServerViewletProvider.getInstance().GetPersonViewlet().updatePerson(person);
+                    if (!updateResponse.getResponseStatus())
+                    {
+                        return false;
+                    }
+                    deletePersonLoginInformation(person.ID_Person, openConnection);
+                }
+                else
+                {
+                    deletePersonLoginInformation(person.ID_Person, openConnection);
+                    deletePerson(person.ID_Person, openConnection);
+                }
+                return true;
+
+            }
+        }
+        return false;
+    }
+
+    private static bool isAngestellt(int personId, SqlConnection openConnection)
+    {
+        return ServerUtil.isFilialleiter(personId, openConnection) || ServerUtil.isEmployee(personId, openConnection);
+    }
+
     public static int createEmptyPerson(SqlConnection openConnection)
     {
         int generatedPersonId = generateNewIdForTable("Person", "ID_Person", openConnection);
@@ -62,6 +116,19 @@ public class ServerUtil
         List<Dictionary<String, Object>> sessionResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Session WHERE sessionID=@sessionID",
             new string[] { "@sessionID" }, new object[] { sessionId });
         if(sessionResult.Count == 0)
+        {
+            return null;
+        }
+        Session session = ConvertUtil.getSession(sessionResult[0]);
+        session.user = getUserFromId(session.FK_Person, openConnection);
+        return session;
+    }
+
+    public static Session getSessionFromPerson(int fkPerson, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> sessionResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Session WHERE FK_Person=@fkPerson",
+            new string[] { "@fkPerson" }, new object[] { fkPerson });
+        if (sessionResult.Count == 0)
         {
             return null;
         }
@@ -125,11 +192,67 @@ public class ServerUtil
         return ConvertUtil.getUser(userResult[0]);
     }
 
+    public static List<User> getAllUsers(SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> userData = CommandUtil.create(openConnection).executeReader("Select * from Benutzer", null, null);
+        List<User> userList = new List<User>();
+        userData.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            userList.Add(ConvertUtil.getUser(row));
+        });
+        return userList;
+    }
+
     public static bool doesUserExist(String mail, SqlConnection openConnection)
     {
         List<Dictionary<String, object>> readResult = CommandUtil.create(openConnection).executeReader(ServerConst.SELECT_BENUTZER_ByName,
             new string[] { "@mail" }, new object[] { mail });
         return readResult.Count >= 1;
+    }
+
+    public static bool logoutUser(int userId, SqlConnection openConnection)
+    {
+        return CommandUtil.create(openConnection).executeSingleQuery("UPDATE Session Set activeSession=0 WHERE FK_Person=@fkPerson",
+            new string[] { "@fkPerson" },
+            new object[] { userId });
+    }
+
+    public static bool checkIfGameIsUsed(int gameId, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> hireData = CommandUtil.create(openConnection).executeReader("Select * From Ausleihe Where FK_Spiel=@fkSpiel",
+            new string[] { "@fkSpiel" },
+            new object[] { gameId });
+        return hireData.Count > 0;
+    }
+
+    public static bool deleteGame(int gameId, SqlConnection openConnection)
+    {
+        return CommandUtil.create(openConnection).executeSingleQuery("DELETE FROM Spiel Where ID_Spiel=@idSpiel",
+            new string[] { "@idSpiel" },
+            new object[] { gameId });
+    }
+
+    public static bool deletePerson(int personId, SqlConnection openConnection)
+    {
+        return CommandUtil.create(openConnection).executeSingleQuery("DELETE FROM Person Where ID_Person=@idPerson",
+            new string[] { "@idPerson" },
+            new object[] { personId });
+    }
+
+    public static bool deletePersonLoginInformation(int personId, SqlConnection openConnection)
+    {
+        if(CommandUtil.create(openConnection).executeSingleQuery("DELETE FROM Benutzer Where FK_Person=@idPerson",
+            new string[] { "@idPerson" },
+            new object[] { personId }))
+        {
+            if (CommandUtil.create(openConnection).executeSingleQuery("DELETE FROM Session Where FK_Person=@idPerson",
+            new string[] { "@idPerson" },
+            new object[] { personId }))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static List<Spiel> getAllGames(SqlConnection openConnection)

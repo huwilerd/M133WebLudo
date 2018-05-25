@@ -45,6 +45,19 @@ public class ValidateUtil : MasterViewlet
         return createResult("Ok", true);
     }
 
+    public ValidateResult validateBeforeOpeningHire(Hire hire)
+    {
+        if (hire == null)
+        {
+            return createResult("Ausleihe existiert nicht", false);
+        }
+        if (!hire.Bezahlt)
+        {
+            return createResult("Ausleihe ist bereits offen", false);
+        }
+        return createResult("Ok", true);
+    }
+
     public ValidateResult validateGettingHire(Hire hire, Session session)
     {
         if(session.sessionRole.Equals(SessionRole.Client)) {

@@ -109,7 +109,7 @@ public abstract class MasterPage : Page
         }
         else if (!isSecurePage() && toSecure)
         {
-            Response.Redirect("../secure/MainMenu.aspx");
+            Response.Redirect("../secure/MainMenu.aspx?page=1");
         }
         else
         {

@@ -45,6 +45,17 @@ public partial class _Default : SecureMasterPage
         } else {
             Response.Redirect("../public/LoginPage.aspx");
         }
+
+        handleParameter();
+    }
+
+    private void handleParameter()
+    {
+        String actionParam = getStringFromParameter("action");
+        if(actionParam!=null && actionParam == "deleteacc")
+        {
+            handleAccountDelete();
+        }
     }
 
     private void showAccountFields(bool show)
@@ -53,6 +64,7 @@ public partial class _Default : SecureMasterPage
         PasswortFieldLabel.Visible = show;
         EmailField.Visible = show;
         PasswortField.Visible = show;
+        deleteLink.Visible = show;
     }
 
     protected override void handlePostback()
@@ -127,6 +139,18 @@ public partial class _Default : SecureMasterPage
         {
             GetViewletProvider().GetPersonViewlet().updatePerson(person);
             Response.Redirect("../secure/MainMenu.aspx");
+        }
+    }
+
+    private void handleAccountDelete()
+    {
+        ServerResponse response = ((ClientInterface)GetViewletProvider().GetPersonViewlet()).deleteAccount(getCurrentSession());
+        if (response.getResponseStatus())
+        {
+            refresh();
+        } else
+        {
+            servererror.InnerText = response.getResponseMessage();
         }
     }
 

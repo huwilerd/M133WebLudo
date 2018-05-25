@@ -95,6 +95,44 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
         }
     }
 
+    public string getAllLudotheken(Session session)
+    {
+        if(session.sessionRole.Equals(SessionRole.Administrator))
+        {
+            ServerResponse allLudothekenData = ServerViewletProvider.getInstance().GetAdminInterface(session).getAllLudotheken();
+            if (allLudothekenData.getResponseStatus())
+            {
+                List<Ludothek> allLudotheken = (List<Ludothek>)allLudothekenData.getResponseObject();
+                if(allLudotheken.Count > 0)
+                {
+                    return HtmlUtil.generateLudothekenListHtml(allLudotheken);
+                }
+                return HtmlUtil.generateErrorMessage("Es wurden keine Ludotheken gefunden");
+            }
+            return HtmlUtil.generateErrorMessage("Es konnten keine Ludotheken geladen werden");
+        }
+        return HtmlUtil.generateErrorMessage("Keine Zugriffsrechte");
+    }
+
+    public string getAllUsers(Session session)
+    {
+        if(session.sessionRole.Equals(SessionRole.Administrator) || session.sessionRole.Equals(SessionRole.Employee))
+        {
+            ServerResponse allUserData = ServerViewletProvider.getInstance().GetEmployeeInterface(session).getAllUsers();
+            if (allUserData.getResponseStatus())
+            {
+                List<User> allUser = (List<User>)allUserData.getResponseObject();
+                if (allUser.Count > 0)
+                {
+                    return HtmlUtil.generateUserOverview(allUser, getOpenConnection());
+                }
+                return HtmlUtil.generateErrorMessage("Keine Benutzer zum anzeigen");
+            }
+            return HtmlUtil.generateErrorMessage("Es konnten keine Benutzer geladen werden: "+allUserData.getResponseMessage());
+        }
+        return HtmlUtil.generateErrorMessage("Keine Zugriffsrechte auf alle Benutzer");
+    }
+
     public string getDashboard(Session session)
     {
         if (session.sessionRole.Equals(SessionRole.Administrator))

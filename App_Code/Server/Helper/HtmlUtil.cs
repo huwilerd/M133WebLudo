@@ -109,6 +109,25 @@ public class HtmlUtil
         return builder.ToString();
     }
 
+    public static String generateLudothekenListHtml(List<Ludothek> ludothekList)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append("<table>");
+        builder.Append("<tr><th>Ludothek-Nr.</th><th>Name</th><th>Adresse</th><th>Aktionen</th></tr>");
+        ludothekList.ForEach(delegate (Ludothek ludothek)
+        {
+            builder.Append(createLudothekTableRow(ludothek));
+        });
+        builder.Append("</table>");
+        return builder.ToString();
+    }
+
+    private static String createLudothekTableRow(Ludothek ludothek)
+    {
+        String actionLinkHtml = "<a href=\"\">Bearbeiten</a>";
+        return "<tr><td>" + ludothek.ID_Ludothek + "</td><td>" + ludothek.name + "</td><td>" + ludothek.strasse + ", " + ludothek.postleitzahl + " " + ludothek.ort + ", Schweiz</td><td>"+actionLinkHtml+"</td></tr>";
+    }
+
     public static String createManageTableRowEmployee(Person employee)
     {
         String actionLinkHtml = "<a href=\"MainMenu.aspx?action=downgrade&empl="+employee.ID_Person+"\">Entfernen</a>";
@@ -119,12 +138,12 @@ public class HtmlUtil
     {
         String mitgliedschaftsText = client.mitgliedschaft == null || client.mitgliedschaft.ID_Mitgliedschaft == -1 ? "Nicht vorhanden" : "Vorhanden";
         String clientActionLinkHtml = showAdminAction ? "<a href=\"MainMenu.aspx?action=upgrade&empl=" + client.ID_Person + "\">Zu Mitarbeiter machen</a>" : "-";
-        return "<tr><td>" + client.ID_Person + "</td><td>" + client.Name + "</td><td>"+client.Geschlecht+"</td><td>"+ FormatUtil.formatDate(client.Geburtsdatum, false)+"</td><td>" + client.strasse + ", " + client.postleitzahl + " " + client.ort + ", " + client.land + "</td><td>"+ FormatUtil.formatDate(client.Einstiegsdatum, false)+"</td><td>"+mitgliedschaftsText+"</td><td>"+ clientActionLinkHtml + "</td<</tr>";
+        return "<tr><td>" + client.ID_Person + "</td><td>" + client.Name + "</td><td>"+client.Geschlecht+"</td><td>"+ FormatUtil.formatDate(client.Geburtsdatum, false)+"</td><td>" + client.strasse + ", " + client.postleitzahl + " " + client.ort + ", " + client.land + "</td><td>"+ FormatUtil.formatDate(client.Einstiegsdatum, false)+"</td><td>"+mitgliedschaftsText+"</td><td>"+ clientActionLinkHtml + "&nbsp;<a href=\"MainMenu.aspx?action=removeClient&user="+client.ID_Person+"\">Löschen</a></td<</tr>";
     }
 
     public static String createOverviewGameElement(Spiel game, SqlConnection openConnection)
     {
-        String actionLinkHtml = "<a href=\"EditGame.aspx?action=edit&page=5&game="+game.ID_Spiel+ "\">Bearbeiten</a>";
+        String actionLinkHtml = "<a href=\"EditGame.aspx?action=edit&page=5&game="+game.ID_Spiel+ "\">Bearbeiten</a>&nbsp;<a href=\"MainMenu.aspx?action=removeGame&game="+game.ID_Spiel+"\">Löschen</a>";
         return "<tr><td>" + game.ID_Spiel + "</td><td>" + game.name + "</td><td>" + game.verlag + "</td><td>"+ServerUtil.getKategorieNameFromId(game.kategorie, openConnection)+"</td><td>"+ServerUtil.getTarifKategorieNameFromId(game.tarifkategorie, openConnection)+"</td><td>"+game.lagerbestand+"</td><td>"+actionLinkHtml+"</td></tr>";
     }
 
@@ -145,6 +164,28 @@ public class HtmlUtil
         }
         html.Append("</div></a>");
         return html.ToString();
+    }
+
+    public static String generateUserOverview(List<User> userList, SqlConnection openConnection)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append("<table>");
+        builder.Append("<tr><th colspan='3'>Alle Benutzer</th></tr>");
+        builder.Append("<tr><th>Benutzer-ID</th><th>E-Mail</th><th>Letzte Aktivität</th><th>Aktionen</th></tr>");
+        userList.ForEach(delegate (User user)
+        {
+            Session currentUserSession = ServerUtil.getSessionFromPerson(user.userId, openConnection);
+            builder.Append(generateUserTableRow(user, currentUserSession));
+        });
+        builder.Append("</table>");
+        return builder.ToString();
+    }
+
+    private static String generateUserTableRow(User user, Session session)
+    {
+        String lastActivity = session.activeSession ? "Online" : FormatUtil.formatDateInRelationToCurrentDateTimeAsText(session.lastActivity);
+        String htmlLinkAction = session.activeSession ? "<a href=\"MainMenu.aspx?action=logout&user=" + user.userId + "\">Logout</a>" : "-";
+        return "<tr><td>" + user.userId + "</td><td>" + user.email + "</td><td>" + lastActivity + "</td><td>" + htmlLinkAction + "</td></tr>";
     }
 
     public static String generateErrorMessage(String errorText)
@@ -218,8 +259,12 @@ public class HtmlUtil
         builder.Append("<td>");
         if(!hire.Bezahlt)
         {
-            builder.Append("<a href=\"MainMenu.aspx?action=close&hire="+hire.ID_Ausleihe+"\">Abschliessen</a>&nbsp;");
+            builder.Append("<a href=\"MainMenu.aspx?action=close&hire="+hire.ID_Ausleihe+"\">Abschliessen</a>");
+        } else
+        {
+            builder.Append("<a href=\"Mainmenu.aspx?action=reopen&hire=" + hire.ID_Ausleihe + "\">Wieder öffnen</a>");
         }
+        builder.Append("&nbsp;");
         builder.Append("<a href=\"MainMenu.aspx?action=delete&hire="+hire.ID_Ausleihe+"\">Löschen</a></td>");
         builder.Append("</tr>");
         return builder.ToString();

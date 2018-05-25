@@ -64,4 +64,17 @@ public class AdminViewlet : MasterViewlet, AdminInterface
         }
         return createResponse(1, "Filialleiter können sich nur selber kündigen", null, false);
     }
+
+    public ServerResponse getAllLudotheken()
+    {
+        List<Dictionary<String, Object>> ludothekenList = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Ludothek", null, null);
+        List<Ludothek> ludothekList = new List<Ludothek>();
+
+        ludothekenList.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            ludothekList.Add(ConvertUtil.GetLudothek(row));
+        });
+
+        return createResponse(1, "Alle Ludotheken", ludothekList, true);
+    }
 }

@@ -46,6 +46,8 @@ public interface ClientInterface
     ServerResponse getSingleGame(int gameId);
 
     ServerResponse getSingleHire(int hireId, Session session);
+
+    ServerResponse deleteAccount(Session session);
 }
 
 public interface PersonFunctionInterface
@@ -67,21 +69,31 @@ public interface EmployeeInterface
 
     ServerResponse getAllHires();
 
+    ServerResponse getAllUsers();
+
     ServerResponse addNewGame(Spiel newSpiel);
 
     ServerResponse updateGame(Spiel updatedSpiel);
 
-    ServerResponse removeGame(Spiel spiel);
+    ServerResponse removeGame(int idSpiel);
 
     ServerResponse closeHire(int idHire);
 
+    ServerResponse reopenHire(int idHire);
+
     ServerResponse removeHire(int idHire);
+
+    ServerResponse logoutUser(int userId);
+
+    ServerResponse deleteUser(int userId);
 
 }
 
 public interface AdminInterface
 {
     ServerResponse getAllEmployees();
+
+    ServerResponse getAllLudotheken();
 
     ServerResponse makeEmployee(int fkPerson);
 
@@ -103,4 +115,8 @@ public interface HtmlInterface
     String getDashboard(Session session);
 
     String getAllGames(Session session, bool manageView);
+
+    String getAllUsers(Session session);
+
+    String getAllLudotheken(Session session);
 }

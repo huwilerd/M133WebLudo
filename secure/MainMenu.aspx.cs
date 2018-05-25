@@ -59,10 +59,10 @@ public partial class MainMenu : SecureMasterPage
                         break;
                     case "close":
                         int toCloseHireId = getIntFromParameter("hire");
-                        if(toCloseHireId > 0)
+                        if (toCloseHireId > 0)
                         {
                             ServerResponse closedHire = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).closeHire(toCloseHireId);
-                            if(closedHire.getResponseStatus())
+                            if (closedHire.getResponseStatus())
                             {
                                 Response.Redirect("MainMenu.aspx?page=3");
                             } else
@@ -72,9 +72,25 @@ public partial class MainMenu : SecureMasterPage
                             }
                         }
                         break;
+                    case "reopen":
+                        int toReopenHireId = getIntFromParameter("hire");
+                        if (toReopenHireId > 0)
+                        {
+                            ServerResponse openedHire = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).reopenHire(toReopenHireId);
+                            if (openedHire.getResponseStatus())
+                            {
+                                Response.Redirect("MainMenu.aspx?page=3");
+                            }
+                            else
+                            {
+                                flexContainer.InnerText = "Aktion konnte nicht durchgeführt werden: " + openedHire.getResponseMessage();
+
+                            }
+                        }
+                        break;
                     case "upgrade":
                         int emplId = getIntFromParameter("empl");
-                        if(emplId > 0)
+                        if (emplId > 0)
                         {
                             if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
                             {
@@ -95,19 +111,84 @@ public partial class MainMenu : SecureMasterPage
                         break;
                     case "downgrade":
                         int downgradeEmplId = getIntFromParameter("empl");
-                        if(downgradeEmplId > 0)
+                        if (downgradeEmplId > 0)
                         {
-                            if(getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
                             {
                                 ServerResponse downgradeEmployeeToClient = GetViewletProvider().GetAdminInterface(getCurrentSession()).removeEmployee(getCurrentSession(), downgradeEmplId);
-                                if(downgradeEmployeeToClient.getResponseStatus())
+                                if (downgradeEmployeeToClient.getResponseStatus())
                                 {
-                                    Response.Redirect("MainMenu.aspx?page=4");
+                                    Response.Redirect("MainMenu.aspx?page=7");
                                 } else
                                 {
                                     flexContainer.InnerHtml = "Aktion konnte nicht durchgeführt werden: " + downgradeEmployeeToClient.getResponseMessage();
                                 }
                             } else
+                            {
+                                flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
+                            }
+                        }
+                        break;
+                    case "logout":
+                        int toLogoutUserId = getIntFromParameter("user");
+                        if (toLogoutUserId > 0)
+                        {
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator) ||
+                                getCurrentSession().sessionRole.Equals(SessionRole.Employee))
+                            {
+                                ServerResponse logoutUserFromPage = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).logoutUser(toLogoutUserId);
+                                if (logoutUserFromPage.getResponseStatus())
+                                {
+                                    Response.Redirect("MainMenu.aspx?page=6");
+                                } else
+                                {
+                                    flexContainer.InnerHtml = logoutUserFromPage.getResponseMessage();
+                                }
+                            } else
+                            {
+                                flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
+                            }
+                        }
+                        break;
+                    case "removeGame":
+                        int toDeleteGameId = getIntFromParameter("game");
+                        if (toDeleteGameId > 0)
+                        {
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator) ||
+                                getCurrentSession().sessionRole.Equals(SessionRole.Employee))
+                            {
+                                ServerResponse deleteGameResp = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).removeGame(toDeleteGameId);
+                                if(deleteGameResp.getResponseStatus())
+                                {
+                                    Response.Redirect("MainMenu.aspx?page=5");
+                                } else
+                                {
+                                    flexContainer.InnerHtml = deleteGameResp.getResponseMessage();
+                                }
+                            } else
+                            {
+                                flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
+                            }
+                        }
+                        break;
+                    case "removeClient":
+                        int toDeleteClientId = getIntFromParameter("user");
+                        if(toDeleteClientId > 0)
+                        {
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator) ||
+                                getCurrentSession().sessionRole.Equals(SessionRole.Employee))
+                            {
+                                ServerResponse deleteUserResp = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).deleteUser(toDeleteClientId);
+                                if (deleteUserResp.getResponseStatus())
+                                {
+                                    Response.Redirect("MainMenu.aspx?page=4");
+                                }
+                                else
+                                {
+                                    flexContainer.InnerHtml = deleteUserResp.getResponseMessage();
+                                }
+                            }
+                            else
                             {
                                 flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
                             }
@@ -156,9 +237,15 @@ public partial class MainMenu : SecureMasterPage
                     }
                     break;
                 case 6:
-                    showAllEmployees(null, null);
+                    showAllUsers(null, null);
                     break;
                 case 7:
+                    showAllEmployees(null, null);
+                    break;
+                case 8:
+                    showLudotheken(null, null);
+                    break;
+                case 9:
                     showDashboard(null, null);
                     break;
                 default:
@@ -170,7 +257,7 @@ public partial class MainMenu : SecureMasterPage
 
     private void setDefaultPage()
     {
-        showCurrentHires(null, null);
+        //showCurrentHires(null, null);
     }
 
     private void handleSessionRole()
@@ -183,6 +270,8 @@ public partial class MainMenu : SecureMasterPage
         dashboard.Visible = false;
         allHires.Visible = false;
         manageTitle.Visible = false;
+        ludotheken.Visible = false;
+        allUsers.Visible = false;
 
         switch (role)
         {
@@ -194,6 +283,7 @@ public partial class MainMenu : SecureMasterPage
                 allGames.Visible = true;
                 allHires.Visible = true;
                 manageTitle.Visible = true;
+                allUsers.Visible = true;
                 Console.WriteLine("Ich bin Employee");
                 break;
             case SessionRole.Administrator:
@@ -203,6 +293,8 @@ public partial class MainMenu : SecureMasterPage
                 allHires.Visible = true;
                 dashboard.Visible = true;
                 manageTitle.Visible = true;
+                allUsers.Visible = true;
+                ludotheken.Visible = true;
                 Console.WriteLine("Ich bin Administrator");
                 break;
         }
@@ -242,6 +334,20 @@ public partial class MainMenu : SecureMasterPage
         String currentHires = GetViewletProvider().GetHtmlViewlet().getOwnOpenHires(getCurrentSession());
         flexContainer.InnerHtml = currentHires;
         setSelectedFilter("current");
+    }
+
+    public virtual void showAllUsers(Object sender, EventArgs e)
+    {
+        String allUsers = GetViewletProvider().GetHtmlViewlet().getAllUsers(getCurrentSession());
+        flexContainer.InnerHtml = allUsers;
+        setSelectedFilter("allUsers");
+    }
+
+    public virtual void showLudotheken(Object sender, EventArgs e)
+    {
+        String allLudotheken = GetViewletProvider().GetHtmlViewlet().getAllLudotheken(getCurrentSession());
+        flexContainer.InnerHtml = allLudotheken;
+        setSelectedFilter("ludotheken");
     }
 
     /**
@@ -292,7 +398,9 @@ public partial class MainMenu : SecureMasterPage
         allGames.CssClass = "";
         dashboard.CssClass = "";
         allHires.CssClass = "";
-      
+        ludotheken.CssClass = "";
+        allUsers.CssClass = "";
+
         String selectedCssClass = "selected";
         switch (filtername)
         {
@@ -319,6 +427,12 @@ public partial class MainMenu : SecureMasterPage
                 break;
             case "allHires":
                 allHires.CssClass = selectedCssClass;
+                break;
+            case "allUsers":
+                allUsers.CssClass = selectedCssClass;
+                break;
+            case "ludotheken":
+                ludotheken.CssClass = selectedCssClass;
                 break;
 
         }

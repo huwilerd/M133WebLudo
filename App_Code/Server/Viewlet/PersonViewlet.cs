@@ -121,5 +121,18 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
         return createResponse(1, "Ausleihe gefunden", hire, true);
     }
 
-    
+    public ServerResponse deleteAccount(Session session)
+    {
+        Person person = ServerUtil.getPersonFromId(session.FK_Person, getOpenConnection());
+        if(person==null)
+        {
+            return createResponse(1, "Keine Person gefunden", null, false);
+        }
+
+        if(ServerUtil.deletePerson(person, session, getOpenConnection()))
+        {
+            return createResponse(1, "Account wurde gelöscht", null, true);
+        }
+        return createResponse(1, "Account konnte nicht gelöscht werden", null, false);
+    }
 }

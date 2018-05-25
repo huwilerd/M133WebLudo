@@ -105,6 +105,11 @@
                 </td>
 		        </tr>
 
+                <tr>
+                    <td></td>
+                    <td> <a href="EditProfil.aspx?action=deleteacc" id="deleteLink" runat="server">Account löschen</a></td>
+                </tr>
+
 		    <tr>
 			    <td>
                     <p class="error" id="servererror" runat="server"></p>

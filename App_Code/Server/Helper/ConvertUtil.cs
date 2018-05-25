@@ -76,4 +76,14 @@ public class ConvertUtil
             Convert.ToString(data["password"]));
     }
 
+    public static Ludothek GetLudothek(Dictionary<String, Object> data)
+    {
+        return new Ludothek(Convert.ToInt32(data["ID_Ludothek"]),
+            Convert.ToString(data["Name"]),
+            Convert.ToString(data["Strasse"]),
+            Convert.ToInt32(data["PLZ"]),
+            Convert.ToString(data["Ort"]),
+            Convert.ToInt32(data["FK_Verband"]));
+    }
+
 }

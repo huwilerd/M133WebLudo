@@ -52,7 +52,13 @@
                     <asp:LinkButton ID="allGames" Text="Spiele Verwalten" OnClick="showAllGames" runat="server" />
                 </div>
                 <div class="sideElement">
+                    <asp:LinkButton ID="allUsers" Text="Benutzer Verwalten" OnClick="showAllUsers"  runat="server" />
+                </div>
+                <div class="sideElement">
                     <asp:LinkButton ID="allEmployees" Text="Mitarbeiter Verwalten" OnClick="showAllEmployees"  runat="server" />
+                </div>
+                <div class="sideElement">
+                    <asp:LinkButton ID="ludotheken" Text="Ludotheken Verwalten" OnClick="showLudotheken"  runat="server" />
                 </div>
                 <div class="sideElement">
                     <asp:LinkButton ID="dashboard" Text="Gesamtübersicht" OnClick="showDashboard" runat="server" />
