@@ -65,6 +65,43 @@ public partial class _Default : SecureMasterPage
         EmailField.Visible = show;
         PasswortField.Visible = show;
         deleteLink.Visible = show;
+        accountLabel.Visible = show;
+
+        bool showStellvertretungFields = getCurrentSession().sessionRole.Equals(SessionRole.Administrator);
+        stellvertretung.Visible = showStellvertretungFields;
+        stellvertretungLabel.Visible = showStellvertretungFields;
+        if (showStellvertretungFields)
+        {
+            ServerResponse response = GetViewletProvider().GetAdminInterface(getCurrentSession()).getAllEmployees();
+            if (response.getResponseStatus())
+            {
+                Person filialleiter = getCurrentPerson();
+                Person stellvertreterPerson = null;
+                ServerResponse stellvertretungResp = GetViewletProvider().GetAdminInterface(getCurrentSession()).getStellvertretung(filialleiter.ID_Person);
+                if (!stellvertretungResp.getResponseStatus())
+                {
+                    servererror.InnerText = stellvertretungResp.getResponseMessage();
+                    return;
+                } else
+                {
+                    stellvertreterPerson = (Person)stellvertretungResp.getResponseObject();
+                }
+                if(stellvertreterPerson!=null)
+                {
+                    List<Person> mitarbeiterList = (List<Person>)response.getResponseObject();
+                    mitarbeiterList.ForEach(delegate (Person ma)
+                    {
+                        stellvertretung.Items.Add(new ListItem(ma.Name, Convert.ToString(ma.ID_Person), true));
+                    });
+
+                    stellvertretung.Value = stellvertretung.Items.FindByValue(Convert.ToString(stellvertreterPerson.ID_Person)).Value;
+                }
+            }
+            else
+            {
+                servererror.InnerText = response.getResponseMessage();
+            }
+        }
     }
 
     protected override void handlePostback()
@@ -147,6 +184,18 @@ public partial class _Default : SecureMasterPage
                         hasError = true;
                     }
                 }
+            }
+        }
+
+        if(stellvertretung.Visible)
+        {
+            Person currentFilialleiter = getCurrentPerson();
+            int newFilialleiterId = Convert.ToInt32(Request.Form["stellvertretung"]);
+            ServerResponse updateResp = GetViewletProvider().GetAdminInterface(getCurrentSession()).updateStellvertretung(currentFilialleiter.ID_Person, newFilialleiterId);
+            if(!updateResp.getResponseStatus())
+            {
+                servererror.InnerText = updateResp.getResponseMessage();
+                hasError = true;
             }
         }
 

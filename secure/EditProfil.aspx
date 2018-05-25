@@ -85,7 +85,9 @@
 				        <asp:RequiredFieldValidator class="error" ID="RequiredFieldValidator8" ControlToValidate="LandField" ErrorMessage="Bitte ausfüllen" runat="server" />
                     </td>
 		            </tr>
-
+                    <tr>
+                        <td><h1 id="accountLabel" runat="server">Account:</h1></td>
+                    </tr>
                      <tr>
                     <td>
 				        <label for="EmailField" id="EmailFieldLabel" runat="server">E-Mail:</label>	 
@@ -106,7 +108,13 @@
 		            </tr>
 
                     <tr>
-                        <td></td>
+                        <td>
+                            <label for="stellvertretung" id="stellvertretungLabel" runat="server">Stellvertretung:</label>
+                        </td>
+                        <td>
+                            <select id="stellvertretung" runat="server" required>
+                            </select>
+                        </td>
                         
                     </tr>
 

@@ -41,6 +41,30 @@ public class AdminViewlet : MasterViewlet, AdminInterface
         return createResponse(1, "Mitarbeiterliste", employeeList, true);
     }
 
+    public ServerResponse getStellvertretung(int idFilialleiter)
+    {
+        List<Dictionary<String, Object>> stellvertretungData = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Filialleiter WHERE FK_Mitarbeiter=@idFilialleiter",
+            new string[] { "@idFilialleiter" }, new object[] { idFilialleiter});
+        if(stellvertretungData.Count == 1)
+        {
+            int idStellvertretung = Convert.ToInt32(stellvertretungData[0]["FK_Stellvertretung"]);
+            Person person = ServerUtil.getPersonFromId(idStellvertretung, getOpenConnection());
+            if(person!=null)
+            {
+                return createResponse(1, "Stellvertretung gefunden", person, true);
+            }
+            return createResponse(1, "Keine Stellvertretung gefunden", null, false);
+        }
+        return createResponse(1, "Keine Stellvertretung gefunden", null, false);
+    }
+
+    public ServerResponse updateStellvertretung(int idFilialleiterPerson, int newStellvertretungId)
+    {
+        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Filialleiter Set FK_Stellvertretung=@idStellvertretung WHERE FK_Mitarbeiter=@idFilialleiter",
+            new string[] { "@idStellvertretung", "@idFilialleiter" }, new object[] { newStellvertretungId, idFilialleiterPerson });
+        return executionState ? createResponse(1, "Stellvertretung aktualisiert", null, true) : createResponse(1, "Stellvertretung konnte nicht aktualisiert werden", null, false);
+    }
+
     public ServerResponse removeEmployee(Session session, int fkPerson)
     {
         bool isFilialleiter = ServerUtil.isFilialleiter(fkPerson, getOpenConnection());

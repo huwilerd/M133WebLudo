@@ -99,6 +99,10 @@ public interface AdminInterface
 
     ServerResponse getAllLudotheken();
 
+    ServerResponse getStellvertretung(int idFilialleiterPerson);
+
+    ServerResponse updateStellvertretung(int idFilialleiterPerson, int newStellvertretungId);
+
     ServerResponse makeEmployee(int fkPerson);
 
     ServerResponse removeEmployee(Session session, int fkPerson);
