@@ -11,13 +11,14 @@
    
 </head>
 <body>
-    <header >
+    <header>
         <div id="mainContainerHeader" class="clearfix">
+            
             <nav>
                 
                 <div class="navigationElement" id="user">
                     
-                        Willkommen <span id="username" runat="server">XXXXX</span>, <a href="EditProfil.aspx" />PROFIL</a> <a href="Logout.aspx" runat="server" id="logoutLink" >Abmelden</a>
+                          Willkommen <span id="username" runat="server">XXXXX</span>, <a href="EditProfil.aspx" />PROFIL</a> <a href="Logout.aspx" runat="server" id="logoutLink" >Abmelden</a> 
                     
 
                     
@@ -30,41 +31,48 @@
     <form id="mainMenuForm" runat="server">
     <div id="wrapper">
         <aside>
-            <div id="containterSideBar">
-                <div class="sideElement">
-                    <h3>Ausleihen</h3>
-                    <asp:LinkButton ID="newestGamesLink" Text="Neuste Spiele" OnClick="showNewestGames" runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="currentHiresLink" Text="Aktuelle Ausleihen" OnClick="showCurrentHires" runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="closedHiresLink" Text="Abgeschlossene Ausleihen" OnClick="showClosedHires" runat="server" />
-                </div>
-                <div class="sideElement">
-                    <h3 id="manageTitle" runat="server">Verwaltung</h3>
-                    <asp:LinkButton ID="allHires" Text="Ausleihen Verwalten" OnClick="showAllHires" runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="allClients" Text="Kunden Verwalten" OnClick="showAllClients" runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="allGames" Text="Spiele Verwalten" OnClick="showAllGames" runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="allUsers" Text="Benutzer Verwalten" OnClick="showAllUsers"  runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="allEmployees" Text="Mitarbeiter Verwalten" OnClick="showAllEmployees"  runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="ludotheken" Text="Ludotheken Verwalten" OnClick="showLudotheken"  runat="server" />
-                </div>
-                <div class="sideElement">
-                    <asp:LinkButton ID="dashboard" Text="Gesamtübersicht" OnClick="showDashboard" runat="server" />
+            <div id="slidercontent">
+
+                <div id="sidebar" class="sidebar">
+                    <h3 class="title">Ausleihen</h3>
+                
+                    <div class="sideElement first">
+                    
+                        <asp:LinkButton ID="newestGamesLink" Text="Neuste Spiele" OnClick="showNewestGames" runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="currentHiresLink" Text="Aktuelle Ausleihen" OnClick="showCurrentHires" runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="closedHiresLink" Text="Abgeschlossene Ausleihen" OnClick="showClosedHires" runat="server" />
+                    </div>
+                
+                    <h3 id="manageTitle" class="title" runat="server">Verwaltung</h3>
+                
+                    <div class="sideElement first">
+                    
+                        <asp:LinkButton ID="allHires" Text="Ausleihen Verwalten" OnClick="showAllHires" runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="allClients" Text="Kunden Verwalten" OnClick="showAllClients" runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="allGames" Text="Spiele Verwalten" OnClick="showAllGames" runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="allUsers" Text="Benutzer Verwalten" OnClick="showAllUsers"  runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="allEmployees" Text="Mitarbeiter Verwalten" OnClick="showAllEmployees"  runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="ludotheken" Text="Ludotheken Verwalten" OnClick="showLudotheken"  runat="server" />
+                    </div>
+                    <div class="sideElement">
+                        <asp:LinkButton ID="dashboard" Text="Gesamtübersicht" OnClick="showDashboard" runat="server" />
+                    </div>
                 </div>
             </div>
-
         </aside>
         <main>
             <div id="containerMain">
@@ -100,11 +108,29 @@
             </div>
 
             </form>
-        </main>
+
+    <div class="slidercontent">
+        <div class="toggle-btn" onclick="toggleSidebar(this);">
+    
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+    </div>
+       </main>
     </div>
     <footer>
 
     </footer>
     
+    
+    <script language="javascript" type="text/javascript">
+
+        function toggleSidebar(ref)
+        {
+          ref.classList.toggle('active');
+          document.getElementById("sidebar").classList.toggle('active');
+        }
+    </script> 
 </body>
 </html>

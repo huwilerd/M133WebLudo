@@ -15,12 +15,27 @@
 h1
 {
     text-transform: uppercase;
-    color: #393939;
+    color: #444;
     margin-bottom: 18px;
 }
-td input
-{
-    
+td input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+td input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
 }
 tr td
 {
@@ -39,7 +54,7 @@ td a
 td a:hover
 {
     transition-duration: 200ms;
-    color: red;
+    color: #4CAF50;
 }
 #loginButton
 {
@@ -65,4 +80,8 @@ td a:hover
 
 .hide {
     visibility: hidden;
+}
+#mainContainer
+{
+    
 }

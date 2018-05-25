@@ -5,6 +5,8 @@
     font-family: 'Roboto', sans-serif;
     height:100%;
     overflow: hidden;
+
+
     
 }
 /*GRUNDDESIGN*/
@@ -12,6 +14,7 @@ header {
     width: 100%;
     background-color: #fff;
     box-shadow: 0px 0px 6px 0px;
+    
 }
 #mainContainerHeader {
    
@@ -23,12 +26,12 @@ main, aside {
 aside
 {
     
-    width:15%;
+    width:0;
     background-color:#fbfbfb;
     float: left;
 }
 main {
-    width: 85%;
+    width: 100%;
     float: right;
     overflow: scroll;
     background: #9053c7;
@@ -44,7 +47,7 @@ nav
 {
     height: 100%;
     width: 100%;
-
+    
 }
 
 .navigationElement
@@ -85,22 +88,31 @@ a:hover {
 
 /*SideBar*/
 
-.sideElement
+.sideElement 
 {
-   padding: 1vh 0px;
+    padding: 1vh 7%;
+   
+    
 }
 .sideElement a
 {
     line-height: none;
     font-size: 1.8vh;
     text-transform: uppercase;
+    
 
+}
+
+.first
+{
+   
 }
 #containterSideBar 
 {
-    padding-top:30px;
-    margin: 0px 7%;
+    padding-top: 30px;
 }
+
+
 
 
 /**/
@@ -108,6 +120,7 @@ a:hover {
 #containerMain
 {
     padding: 18px;
+    margin-left: 10%;
 }
 #flexContainer
 {
@@ -115,6 +128,8 @@ a:hover {
     flex-direction: row;
     flex-wrap: wrap;
     width: auto;
+    color: #eee;
+    
 }
 .flexItem
 {
@@ -139,17 +154,10 @@ a:hover {
     width: 200px;
     margin-left: 10px;
     height: 213px;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
-.mainItemTitle h1
-{
-    color: #222;
-}
-.mainItemTitle p
-{
-    
-    color: #444;
-}
+
+
 .button {
     display: inline-block;
     border-radius: 20px;
@@ -224,15 +232,26 @@ a:hover {
     visibility: hidden;
 }
 /**/
+.mainItemTitle h1 
+{
+    color: #444;
+    font-size: 24px;
+}
+.mainItemTitle p 
+{
+    color: #555;
+}
 h3
 {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     text-transform: uppercase;
-    color: #444;
+    color: #888;
     font-size:24px;
-    text-decoration: underline;
 }
-
+.title 
+{
+    padding: 1vh 5%;
+}
 /**/
 ::-webkit-scrollbar {
     width: 12px;
@@ -247,3 +266,151 @@ h3
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
+
+
+
+/**/
+
+
+
+.slidercontent {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 30%;
+    height: 55px;
+    z-index: 10;
+}
+
+    .slidercontent .toggle-btn {
+        transition: all 450ms ease-in-out;
+        position: absolute;
+        top: 70px;
+        left: 20px;
+        width: 55px;
+        hleft: 55px;
+        cursor: pointer;
+        z-index:7;
+    }
+    .slidercontent .toggle-btn.active
+    {
+        transition: all 450ms ease-in-out;
+        left: 90%;
+    }
+    .slidercontent span {
+        position: relative;
+        top: 0px;
+        display: block;
+        background: #eee;
+        width: 80%;
+        height: 5px;
+        margin: 10px 0px;
+        z-index: 11;
+    }
+
+    .slidercontent .toggle-btn.active span:nth-child(1) {
+        top: 15px;
+        transform: rotate(45deg);
+        transition: top 200ms ease-in-out 0ms,transform 250ms ease-in-out 150ms;
+    }
+
+    .slidercontent .toggle-btn.active span:nth-child(3) {
+        top: -15px;
+        transform: rotate(-45deg);
+        transition: top 200ms ease-in-out 0ms,transform 250ms ease-in-out 150ms;
+    }
+
+    .slidercontent .toggle-btn.active span:nth-child(2) {
+        opacity: 0;
+        transition: opacity 50ms ease-in-out 150ms;
+    }
+
+    .slidercontent .toggle-btn span:nth-child(1),
+    .slidercontent .toggle-btn span:nth-child(3) {
+        transition: transform 250ms ease-in-out 0ms,top 200ms ease-in-out 150ms;
+    }
+
+    .slidercontent .toggle-btn span:nth-child(2) {
+        opacity: 1;
+        transition: opacity 50ms ease-in-out 200ms;
+    }
+
+.sidebar {
+    position: absolute;
+    top: 0px;
+    left: -30%;
+    width: 30%;
+    height: calc(100% - 55px);
+    background: #202020;
+    padding: 15px;
+    opacity: 0;
+    transition: all 450ms ease-in-out;
+    z-index: 5;
+}
+
+
+
+    .sidebar .item {
+        font-size: 18px;
+        color: #fafafa;
+        font-weight: 300;
+        text-transform: uppercase;
+        padding: 12px 5px;
+        border-bottom: 1px solid #4b4a4a;
+        cursor: pointer;
+        opacity: 1;
+    }
+
+    .sidebar.active {
+        opacity: 0.99;
+        left: 0;
+    }
+
+
+    /*TABELLEN*/
+
+table {
+    border-collapse: collapse;
+    color: #555;
+    margin-bottom: 20px;
+    width: 90%;
+    background-color: #fbfbfb;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px #aaa;
+    padding: 100px;
+}
+tbody th, tbody td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #555;
+    padding: 10px;
+}
+tbody th
+{
+    color:#444;
+}
+
+tbody td a:hover {
+    color: #444;
+    text-decoration: none;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+    tbody td a {
+        transition-duration: 200ms;
+        color: #57b846;
+        float:left;
+        cursor: pointer;
+    }
+    #flexContainer div a
+    {
+        color: #eee;
+    }
+        #flexContainer div a:hover {
+            color: #ccc;
+            transition: all 450ms ease-in-out;
+        }
+
+    /**/
