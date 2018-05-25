@@ -15,13 +15,7 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
     public ServerResponse getAllGames()
     {
-        List<Dictionary<String, Object>> gameData = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Spiel", null, null);
-        List<Spiel> spielList = new List<Spiel>();
-        gameData.ForEach(delegate (Dictionary<String, Object> row)
-        {
-           spielList.Add(ConvertUtil.getSpiel(row));
-        });
-        return createResponse(1, "Gesamte Spielliste", spielList, true);
+        return createResponse(1, "Gesamte Spielliste", ServerUtil.getAllGames(getOpenConnection()), true);
     }
 
     public ServerResponse getOwnHires(Session session)

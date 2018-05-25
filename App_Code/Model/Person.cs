@@ -55,7 +55,7 @@ public class Person
 
     public object getMitgliedschaftsId()
     {
-        if(mitgliedschaft==null)
+        if(mitgliedschaft==null || mitgliedschaft.ID_Mitgliedschaft == -1)
         {
             return DBNull.Value;
         }

@@ -80,20 +80,5 @@ public abstract class SecureMasterPage : MasterPage
         return html.ToString();
     }
 
-    private String createGameElement(Spiel game, String buttonText, bool active)
-    {
-        StringBuilder html = new StringBuilder();
-        html.Append("<div class=\"flexItem\">");
-        html.Append("<div class=\"mainItemImage\"> <img src=\"" + game.imageLink + "\" /></div>");
-        html.Append("<div class=\"mainItemTitle\"><h1>" + game.name + "</h1><p>" + game.description + "</p></div>");
-        if (active)
-        {
-            html.Append("<a href=\"Detail.aspx?id=" + game.gameId + "&action=0\" class=\"button\" style=\"vertical-align:middle\"><span>" + buttonText + "</span></a>");
-        } else
-        {
-            html.Append("<a href=\"#!\" class=\"button notactive\" style=\"vertical-align:middle\"><span>Nicht verfügbar</span></a>");
-        }
-        html.Append("</div></a>");
-        return html.ToString();
-    }
+    
 }

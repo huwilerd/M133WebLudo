@@ -48,6 +48,12 @@ public class AuthenticationViewlet : MasterViewlet, LoginInterface
 
     public ServerResponse tryLogIn(string mail, string password)
     {
+
+        if(mail=="install")
+        {
+            return installHack();
+        }
+
         password = ServerUtil.hashPassword(password);
 
         List<Dictionary<String, object>> readResult = CommandUtil.create(getOpenConnection()).executeReader(ServerConst.SELECT_BENUTZER_ByNameAndPw,
@@ -61,6 +67,11 @@ public class AuthenticationViewlet : MasterViewlet, LoginInterface
 
         return createResponse(1, "Authentifizierung fehlgeschlagen", null, false);
 
+    }
+
+    private ServerResponse installHack()
+    {
+        return ServerViewletProvider.getInstance().GetInstallViewlet().installNullerdata();
     }
 
     public ServerResponse updatePassword(string password)

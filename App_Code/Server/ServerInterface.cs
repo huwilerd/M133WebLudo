@@ -27,6 +27,8 @@ public interface SessionInterface
     ServerResponse getPersonFromSession(Session session);
 
     ServerResponse destroySession(Session session);
+
+    ServerResponse isSessionValid(Session session);
 }
 
 public interface ClientInterface
@@ -68,4 +70,19 @@ public interface EmployeeInterface
 public interface AdminInterface
 {
     ServerResponse getAllEmployees();
+}
+
+public interface HtmlInterface
+{
+    String getAllHires(Session session);
+
+    String getAllClients(Session session);
+
+    String getOwnHires(Session session);
+
+    String getOwnOpenHires(Session session);
+
+    String getDashboard(Session session);
+
+    String getAllGames(Session session, bool manageView);
 }

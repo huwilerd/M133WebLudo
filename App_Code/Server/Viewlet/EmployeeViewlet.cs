@@ -24,17 +24,29 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
 
     public ServerResponse getAllClients()
     {
-        throw new NotImplementedException();
+        List<Dictionary<String, Object>> clientData = CommandUtil.create(getOpenConnection()).executeReader("Select * From Person", null, null);
+        List<Person> clientList = new List<Person>();
+        clientData.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            clientList.Add(ConvertUtil.getPerson(row));
+        });
+        return createResponse(1, "Alle Kunden", clientList, true);
     }
 
     public ServerResponse getAllGames()
     {
-        throw new NotImplementedException();
+        return createResponse(1, "Alle Spiele", ServerUtil.getAllGames(getOpenConnection()), true);
     }
 
     public ServerResponse getAllHires()
     {
-        throw new NotImplementedException();
+        List<Dictionary<String, Object>> hireData = CommandUtil.create(getOpenConnection()).executeReader("Select * From Ausleihe", null, null);
+        List<Hire> hireList = new List<Hire>();
+        hireData.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            hireList.Add(ConvertUtil.getHire(row));
+        });
+        return createResponse(1, "Alle Ausleihen", hireList, true);
     }
 
     public ServerResponse removeGame(Spiel spiel)

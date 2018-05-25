@@ -28,7 +28,7 @@ public partial class _Default : SecureMasterPage
         {
             //currentGame = DataProvider.getInstance().getGameFromId(gameId);
             gameNameLabel.InnerText = currentGame.name + " ausleihen";
-            gameDescriptionLabel.InnerText = currentGame.description;
+            //gameDescriptionLabel.InnerText = currentGame.description;
 
             int actionId = getActionCode();
             if(actionId >= 0)
@@ -40,14 +40,14 @@ public partial class _Default : SecureMasterPage
                     if(hireId > 0)
                     {
                        // currentHire = DataProvider.getInstance().getHireOfId(hireId);
-                        currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
+              //          currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
                         gameNameLabel.InnerText = "Ausleihe von " + currentGame.name + " verlängern";
                         tryButton.Value = "Verlängerung beantragen";
                         ToDateLabel.Visible = true;
-                        ToDateLabel.InnerHtml = currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS).ToString("dd.MM.yyyy");
+                       // ToDateLabel.InnerHtml = currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS).ToString("dd.MM.yyyy");
                         VonDateLabel.InnerText = "Ausleihe verlängern bis:";
                         VonDateField.Visible = false;
-                        VonDateField.Text = currentHire.fromDate.ToString();
+                        //VonDateField.Text = currentHire.fromDate.ToString();
                     }
                 }
                 return;
@@ -119,7 +119,7 @@ public partial class _Default : SecureMasterPage
                 hasError = true;
             }
 
-            Hire newHire = new Hire(-1, user.userId, currentGame.gameId, fromDate, toDate, 0, false);
+            //Hire newHire = new Hire(-1, user.userId, currentGame.gameId, fromDate, toDate, 0, false);
 
             if(!hasError) { 
                 //Hire savedHire = DataHandler.getInstance().saveHireOfUser(newHire);

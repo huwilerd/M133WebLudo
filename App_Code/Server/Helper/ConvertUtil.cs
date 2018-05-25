@@ -14,10 +14,10 @@ public class ConvertUtil
             Convert.ToString(data["Geschlecht"]),
             Convert.ToDateTime(data["Geburtsdatum"]),
             Convert.ToDateTime(data["Einstiegsdatum"]),
-            null,
+            new Mitgliedschaft(data["FK_Mitgliedschaft"] == DBNull.Value ? -1 : Convert.ToInt32(data["FK_Mitgliedschaft"]), null, null, DateTime.Now, DateTime.Now),
             Convert.ToString(convertDBNullToEmpty(data["Strasse"])),
             Convert.ToInt32(convertDBNullToZero(data["Postleitzahl"])),
-             Convert.ToString(convertDBNullToEmpty(data["Ort"])),
+            Convert.ToString(convertDBNullToEmpty(data["Ort"])),
             Convert.ToString(convertDBNullToEmpty(data["Land"])));
     }
 

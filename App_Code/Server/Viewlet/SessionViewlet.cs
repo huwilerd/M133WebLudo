@@ -15,11 +15,11 @@ public class SessionViewlet : MasterViewlet, SessionInterface
             new string[] { "@fkPerson" }, new object[] { fkPerson });
         if(sessionResult.Count == 0)
         {
-           return createResponse(1, "Session erfolgreich erstellt", createNewSession(fkPerson), true);
+           return createResponse(1, "Session erfolgreich erstellt", setSession(createNewSession(fkPerson)), true);
         } else
         {
             Session currentSession = ConvertUtil.getSession(sessionResult[0]);
-            return createResponse(1, "Session erfolgreich verlängert",  updateSessionActivity(currentSession), true);
+            return createResponse(1, "Session erfolgreich verlängert",  setSession(updateSessionActivity(currentSession)), true);
         }
     }
 
@@ -94,5 +94,33 @@ public class SessionViewlet : MasterViewlet, SessionInterface
             new string[] { "@activeSession", "@sessionID" }, new object[] { false, session.sessionID });
         
         return destroyState ? createResponse(1, "Session erfolgreich zerstört", null, true) : createResponse(1, "Session konnte nicht zerstört werden", null, false);
+    }
+
+    public ServerResponse isSessionValid(Session session)
+    {
+        var timeout = session.lastActivity.AddMinutes(ServerConst.SESSION_TIMEOUT_MINUTES);
+        if(timeout.CompareTo(DateTime.Now) < 0) //is session lastactivity 
+        {
+            return createResponse(1, "Session ist abgelaufen", false, false);
+        }
+        return createResponse(1, "Session ist noch nicht abgelaufen", session.activeSession, true);
+    }
+
+    private Session setSession(Session session)
+    {
+        return new Session(session.sessionID, session.FK_Person, session.activeSession, session.lastActivity, session.user, getSessionRoleForPerson(session.FK_Person));
+    }
+
+    private SessionRole getSessionRoleForPerson(int fkPerson)
+    {
+        if (ServerUtil.isEmployee(fkPerson, getOpenConnection()))
+        {
+            if(ServerUtil.isFilialleiter(fkPerson, getOpenConnection()))
+            {
+                return SessionRole.Administrator;
+            }
+            return SessionRole.Employee;
+        }
+        return SessionRole.Client;
     }
 }

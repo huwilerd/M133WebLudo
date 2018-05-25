@@ -59,7 +59,7 @@ public abstract class MasterPage : Page
             if(response.getResponseStatus())
             {
                 Session currentSession = (Session) response.getResponseObject();
-                if(currentSession.activeSession)
+                if((bool)GetViewletProvider().GetSessionInterface().isSessionValid(currentSession).getResponseObject()) //is session valid
                 {
                     ServerResponse fillInfoResponse = sessionInterface.hasToFillInInformation(currentSession);
 

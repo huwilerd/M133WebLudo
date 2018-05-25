@@ -23,6 +23,8 @@ public class ServerViewletProvider
     private AuthenticationViewlet authenticationViewlet;
     private SessionViewlet sessionViewlet;
     private PersonViewlet personViewlet;
+    private EmployeeViewlet employeeViewlet;
+    private HtmlViewlet htmlViewlet;
 
     private ServerViewletProvider()
     {
@@ -47,13 +49,36 @@ public class ServerViewletProvider
         return sessionViewlet;
     }
 
-    public PersonViewlet GetPersonViewlet()
+    public PersonFunctionInterface GetPersonViewlet()
     {
         if(personViewlet == null)
         {
             personViewlet = new PersonViewlet();
         }
         return personViewlet;
+    }
+
+    public EmployeeInterface GetEmployeeInterface()
+    {
+        if(employeeViewlet == null)
+        {
+            employeeViewlet = new EmployeeViewlet();
+        }
+        return employeeViewlet;
+    }
+
+    public HtmlInterface GetHtmlViewlet()
+    {
+        if(htmlViewlet == null)
+        {
+            htmlViewlet = new HtmlViewlet();
+        }
+        return htmlViewlet;
+    }
+
+    public InstallViewlet GetInstallViewlet()
+    {
+        return new InstallViewlet();
     }
 
 

@@ -81,6 +81,95 @@ public class ServerUtil
         return readResult.Count >= 1;
     }
 
+    public static List<Spiel> getAllGames(SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> gameData = CommandUtil.create(openConnection).executeReader("SELECT * FROM Spiel", null, null);
+        List<Spiel> spielList = new List<Spiel>();
+        gameData.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            spielList.Add(ConvertUtil.getSpiel(row));
+        });
+        return spielList;
+    }
+
+    public static bool isFilialleiter(int fkPerson, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> filialleiterData = CommandUtil.create(openConnection).executeReader("SELECT * FROM Filialleiter WHERE FK_Mitarbeiter=@fkPerson",
+            new string[] { "@fkPerson" }, new object[] { fkPerson});
+        return filialleiterData.Count == 1;
+    }
+
+    public static bool addLudothek(Ludothek ludothek, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Ludothek VALUES(@idLudothek, @name, @strasse, @plz, @ort, @fkVerband)",
+            new string[] { "@idLudothek", "@name", "@strasse", "@plz", "@ort", "@fkVerband" },
+            new object[] { ludothek.ID_Ludothek, ludothek.name, ludothek.strasse, ludothek.postleitzahl, ludothek.ort, ludothek.verband });
+
+        return executionState;
+    }
+
+    public static bool addEmployee(int fkPerson, int fkLudothek, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Mitarbeiter VALUES(@idPerson, @idLudothek)",
+            new string[] { "@idPerson", "@idLudothek" },
+            new object[] { fkPerson, fkLudothek });
+
+        return executionState;
+    }
+
+    public static bool addVerband(Verband verband, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Verband VALUES(@idVerband, @verbandName)",
+            new string[] { "@idVerband", "@verbandName" },
+            new object[] { verband.ID_Verband, verband.Name });
+
+        return executionState;
+    }
+
+    public static bool addFilialleiter(int fkPerson, SqlConnection openConnection)
+    {
+        int generatedId = generateNewIdForTable("Filialleiter", "ID_Filialleiter", openConnection);
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Filialleiter VALUES(@idFilialleiter, @idPerson, @idStellvertretung)",
+            new string[] { "@idFilialleiter", "@idPerson", "@idStellvertretung" },
+            new object[] { generatedId, fkPerson, fkPerson});
+
+        return executionState;
+    }
+
+    public static bool isEmployee(int fkPerson, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> mitarbeiterData = CommandUtil.create(openConnection).executeReader("SELECT * FROM Mitarbeiter WHERE FK_Person=@fkPerson",
+            new string[] { "@fkPerson" }, new object[] { fkPerson });
+        return mitarbeiterData.Count == 1;
+    }
+
+    public static bool addKategorie(Kategorie kategorie, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Kategorie VALUES(@idKategorie, @name, @altersfreigabe)",
+            new string[] { "@idKategorie", "@name", "@altersfreigabe" },
+            new object[] { kategorie.ID_Kategorie, kategorie.Name, kategorie.Altersfreigabe });
+
+        return executionState;
+    }
+
+    public static bool addTarifKategorie(TarifKategorie tarifKategorie, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO TarifKategorie VALUES(@idKategorie, @name, @normalPreis, @mitgliedschaftsauflage)",
+            new string[] { "@idKategorie", "@name", "@normalPreis", "@mitgliedschaftsauflage" },
+            new object[] { tarifKategorie.ID_TarifKategorie, tarifKategorie.Name, tarifKategorie.NormalPreis, tarifKategorie.MitgliedschaftsAuflage });
+
+        return executionState;
+    }
+
+    public static bool addMitgliedschaft(Mitgliedschaft mitgliedschaft, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Mitgliedschaft VALUES(@idMitgliedschaft, @status, @rechnungsstatus, @erstellungsdatum, @auslaufdatum)",
+            new string[] { "@idMitgliedschaft", "@status", "@rechnungsstatus", "@erstellungsdatum", "@auslaufdatum" },
+            new object[] { mitgliedschaft.ID_Mitgliedschaft, mitgliedschaft.Status, mitgliedschaft.Rechnungsstatus, mitgliedschaft.Erstellungsdatum, mitgliedschaft.AuslaufDatum});
+
+        return executionState;
+    }
+
     public static int generateNewIdForTable(String tableName, String idColName, SqlConnection openConnection)
     {
         List<Dictionary<String, object>> tableData = CommandUtil.create(openConnection).executeReader("SELECT " + idColName + " FROM " + tableName, null, null);
