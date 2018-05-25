@@ -9,7 +9,7 @@ using System.Web;
 public class ServerConst
 {
     //Connection
-    public static String CONNECTION_STRING = "VMWP2\\SQLEXPRESS";
+    public static String CONNECTION_STRING = "DESKTOP-QC9NDF8\\SQLEXPRESS";
     public static String CONNECTION_DATABASE = "Ludothek";
 
     public static int DEFAULT = -1;

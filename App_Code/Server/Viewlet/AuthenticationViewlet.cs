@@ -25,21 +25,29 @@ public class AuthenticationViewlet : MasterViewlet, LoginInterface
 
         password = ServerUtil.hashPassword(password);
 
-        bool doesUserExist = ServerUtil.doesUserExist(mail, getOpenConnection());
-
-        if(doesUserExist)
+        ValidateResult mailResult = ValidateUtil.getInstance().validateEmail(mail);
+        if (mailResult.validateStatus)
         {
-            return createResponse(1, "Benutzer mit dieser Mail bereits vorhanden", null, false);
-        }
-        else
+
+            bool doesUserExist = ServerUtil.doesUserExist(mail, getOpenConnection());
+
+            if (doesUserExist)
+            {
+                return createResponse(1, "Benutzer mit dieser Mail bereits vorhanden", null, false);
+            }
+            else
+            {
+                int newCreatedPersonId = ServerUtil.createEmptyPerson(getOpenConnection());
+
+                bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery(ServerConst.INSERT_BENUTZER_QUERY,
+                    new string[] { "@id", "@mail", "@password" },
+                    new object[] { newCreatedPersonId, password, mail });
+
+                return executionState ? createResponse(1, "User wurde erstellt", "Session", true) : createResponse(1, "User konnte nicht erstellt werden", null, false);
+            }
+        } else
         {
-            int newCreatedPersonId = ServerUtil.createEmptyPerson(getOpenConnection());
-
-            bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery(ServerConst.INSERT_BENUTZER_QUERY,
-                new string[] { "@id", "@mail", "@password" },
-                new object[] { newCreatedPersonId, password, mail});
-
-            return executionState ? createResponse(1, "User wurde erstellt", "Session", true) : createResponse(1, "User konnte nicht erstellt werden", null, false);
+            return createResponse(1, mailResult.validateMessage, null, false);
         }
     }
 
@@ -49,23 +57,31 @@ public class AuthenticationViewlet : MasterViewlet, LoginInterface
     public ServerResponse tryLogIn(string mail, string password)
     {
 
-        if(mail=="install")
+        if(mail=="install@now.ch")
         {
             return installHack();
         }
 
         password = ServerUtil.hashPassword(password);
 
-        List<Dictionary<String, object>> readResult = CommandUtil.create(getOpenConnection()).executeReader(ServerConst.SELECT_BENUTZER_ByNameAndPw,
-            new string[] { "@mail", "@password" }, new object[] { mail, password});
-
-        if(readResult.Count>=1)
+        ValidateResult result = ValidateUtil.getInstance().validateEmail(mail);
+        if (result.validateStatus)
         {
-            int fkLoggedInPerson = Convert.ToInt32(readResult[0]["FK_Person"]);
-            return ServerViewletProvider.getInstance().GetSessionInterface().loginUser(fkLoggedInPerson);
-        }
 
-        return createResponse(1, "Authentifizierung fehlgeschlagen", null, false);
+            List<Dictionary<String, object>> readResult = CommandUtil.create(getOpenConnection()).executeReader(ServerConst.SELECT_BENUTZER_ByNameAndPw,
+                new string[] { "@mail", "@password" }, new object[] { mail, password });
+
+            if (readResult.Count >= 1)
+            {
+                int fkLoggedInPerson = Convert.ToInt32(readResult[0]["FK_Person"]);
+                return ServerViewletProvider.getInstance().GetSessionInterface().loginUser(fkLoggedInPerson);
+            }
+
+            return createResponse(1, "Authentifizierung fehlgeschlagen", null, false);
+        } else
+        {
+            return createResponse(1, result.validateMessage, null, false);
+        }
 
     }
 

@@ -91,7 +91,17 @@ public partial class _Default : SecureMasterPage
         person.Name = name;
         person.Geburtsdatum = Convert.ToDateTime(geburtsdatum);
         person.strasse = strasse;
-        person.postleitzahl = Convert.ToInt32(plz);
+
+        ValidateResult plzResult = ValidateUtil.getInstance().validatePostleitzahl(plz);
+        if (!plzResult.validateStatus)
+        {
+            servererror.InnerText = plzResult.validateMessage;
+            hasError = true;
+        }
+        else
+        {
+            person.postleitzahl = Convert.ToInt32(plz);
+        }
         person.ort = ort;
         person.land = land;
        
@@ -130,7 +140,12 @@ public partial class _Default : SecureMasterPage
             {
                 if (!hasError)
                 {
-                    GetViewletProvider().GetPersonViewlet().updateUser(currentLoggedInUser);
+                    ServerResponse updateUserResp = GetViewletProvider().GetPersonViewlet().updateUser(currentLoggedInUser);
+                    if(!updateUserResp.getResponseStatus())
+                    {
+                        servererror.InnerText = updateUserResp.getResponseMessage();
+                        hasError = true;
+                    }
                 }
             }
         }

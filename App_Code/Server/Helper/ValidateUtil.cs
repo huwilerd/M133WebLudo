@@ -89,6 +89,47 @@ public class ValidateUtil : MasterViewlet
         return createResult("Ok", true);
     }
 
+    public ValidateResult validatePostleitzahl(String plzText)
+    {
+       
+            int plzResult;
+            bool isNumeric = int.TryParse(plzText, out plzResult);
+            if(isNumeric)
+            {
+                if(plzResult > 1000 && plzResult < 10000)
+                {
+                    return createResult("Ok", true);
+                }
+            }
+        return createResult("Bitte geben Sie eine gültige Postleitzahl an", false);
+    }
+
+    public ValidateResult validateEmail(String emailText)
+    {
+        var mailChecker = new System.ComponentModel.DataAnnotations.EmailAddressAttribute();
+        if(mailChecker.IsValid(emailText))
+        {
+            return createResult("OK", true);
+        }
+        return createResult("Bitte geben Sie eine gültige E-Mail an", false);
+    }
+
+    public ValidateResult validatePerson(Person person)
+    {
+        TimeSpan age = DateTime.Now - person.Geburtsdatum;
+
+        if (age.TotalDays < AppConst.MIN_AGE * 365.25)
+        {
+            return createResult("Man muss älter als " + AppConst.MIN_AGE + " Jahre sein", false);
+        }
+        if (person.land.ToLower() != "schweiz")
+        {
+            return createResult("Kunden müssen aus der Schweiz sein", false);
+        }
+
+        return createResult("OK", true);
+    }
+
     private ValidateResult createResult(String message, bool status)
     {
         return new ValidateResult(message, status);

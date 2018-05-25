@@ -84,6 +84,11 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
     public ServerResponse updatePerson(Person person)
     {
+        ValidateResult validateResult = ValidateUtil.getInstance().validatePerson(person);
+        if(!validateResult.validateStatus)
+        {
+            return createResponse(1, validateResult.validateMessage, null, false);
+        }
         bool executeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Person SET Name=@Name, Geschlecht=@Geschlecht, Geburtsdatum=@Geburtsdatum, FK_Mitgliedschaft=@fkmitgliedschaft, Strasse=@Strasse, Postleitzahl=@Postleitzahl, Ort=@Ort, Land=@Land WHERE ID_Person=@idPerson",
             new string[] { "@Name","@Geschlecht", "@Geburtsdatum", "@fkmitgliedschaft", "@Strasse", "@Postleitzahl", "@Ort", "@Land", "@idPerson"},
             new object[] { person.Name, person.Geschlecht, person.Geburtsdatum, person.getMitgliedschaftsId(), person.strasse, person.postleitzahl, person.ort, person.land, person.ID_Person });
@@ -92,6 +97,11 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
     public ServerResponse updateUser(User user)
     {
+        ValidateResult validateResult = ValidateUtil.getInstance().validateEmail(user.email);
+        if(!validateResult.validateStatus)
+        {
+            return createResponse(1, validateResult.validateMessage, null, false);
+        }
         bool executeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Benutzer SET mail=@mail, password=@password WHERE FK_Person=@idPerson",
            new string[] { "@idPerson", "@mail", "@password" },
            new object[] { user.userId, user.email, user.password });

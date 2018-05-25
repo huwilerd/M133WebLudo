@@ -20,4 +20,7 @@ public class AppConst
     //LOGIC CONST
     public static int HIRE_AMOUNT_DAYS = 7;
     public static int HIRE_MAX_AMOUNT_OF_REHIRES = 3;
+
+    //PERSON
+    public static int MIN_AGE = 16;
 }

@@ -26,6 +26,8 @@ public class CommandUtil
 
     public List<Dictionary<String, Object>> executeReader(String query, String[] paramNames, Object[] paramValues)
     {
+        handleBeforeAction();
+
         SqlCommand command = new SqlCommand(query, connection);
         setParametersToSqlCommand(command, paramNames, paramValues);
         SqlDataReader reader = command.ExecuteReader();
@@ -40,6 +42,8 @@ public class CommandUtil
         }
 
         reader.Close();
+
+        handleAfterAction();
 
         return dataList;
     }
@@ -61,9 +65,13 @@ public class CommandUtil
 
     public bool executeSingleQuery(String query, String[] paramNames, Object[] paramValues)
     {
+        handleBeforeAction();
+
         SqlCommand command = new SqlCommand(query, connection);
         setParametersToSqlCommand(command, paramNames, paramValues);
         int affectedRows = command.ExecuteNonQuery();
+        handleAfterAction();
+
         return affectedRows == 1; //Single Datarow is affected
     }
 
@@ -80,6 +88,22 @@ public class CommandUtil
         for(int i = 0; i < columns.Length; i++)
         {
             command.Parameters.AddWithValue(columns[i], values[i]);
+        }
+    }
+
+    private void handleBeforeAction()
+    {
+        if (connection.State == ConnectionState.Closed)
+        {
+            connection.Open();
+        }
+    }
+
+    private void handleAfterAction()
+    {
+        if (connection.State == ConnectionState.Open)
+        {
+            connection.Close();
         }
     }
 

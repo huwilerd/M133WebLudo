@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Zusammenfassungsbeschreibung für SessionRole
+/// Zusammenfassungsbeschreibung für ServerRole
 /// </summary>
 public enum SessionRole
 {
-    Administrator, Employee, Client
+   Administrator, Employee, Client
 }
