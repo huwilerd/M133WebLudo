@@ -68,7 +68,7 @@ public class AuthenticationViewlet : MasterViewlet, LoginInterface
         if (result.validateStatus)
         {
 
-            List<Dictionary<String, object>> readResult = CommandUtil.create(getOpenConnection()).executeReader(ServerConst.SELECT_BENUTZER_ByNameAndPw,
+            List<Dictionary<String, object>> readResult = CommandUtil.create(getOpenConnection()).executeReaderSP(ServerConst.LOGIN_STORED_PROCEDURE,
                 new string[] { "@mail", "@password" }, new object[] { mail, password });
 
             if (readResult.Count >= 1)

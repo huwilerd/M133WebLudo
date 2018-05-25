@@ -115,7 +115,7 @@ public class ServerUtil
 
     public static Session getSessionFromId(String sessionId, SqlConnection openConnection)
     {
-        List<Dictionary<String, Object>> sessionResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Session WHERE sessionID=@sessionID",
+        List<Dictionary<String, Object>> sessionResult = CommandUtil.create(openConnection).executeReaderSP(ServerConst.SELECT_SESSION_PROCEDURE,
             new string[] { "@sessionID" }, new object[] { sessionId });
         if(sessionResult.Count == 0)
         {

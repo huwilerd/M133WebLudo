@@ -24,6 +24,31 @@ public class CommandUtil
         this.connection = connection;
     }
 
+    public List<Dictionary<String, Object>> executeReaderSP(String spName, String[] paramNames, Object[] paramValues)
+    {
+        handleBeforeAction();
+
+        SqlCommand command = new SqlCommand(spName, connection);
+        command.CommandType = CommandType.StoredProcedure;
+        setParametersToSqlCommand(command, paramNames, paramValues);
+        SqlDataReader reader = command.ExecuteReader();
+
+        List<String> columns = getColumnsFromReader(reader);
+
+        List<Dictionary<String, Object>> dataList = new List<Dictionary<String, Object>>();
+
+        while (reader.Read())
+        {
+            dataList.Add(fillDictionaryWithRow(reader, columns));
+        }
+
+        reader.Close();
+
+        handleAfterAction();
+
+        return dataList;
+    }
+
     public List<Dictionary<String, Object>> executeReader(String query, String[] paramNames, Object[] paramValues)
     {
         handleBeforeAction();
@@ -68,6 +93,19 @@ public class CommandUtil
         handleBeforeAction();
 
         SqlCommand command = new SqlCommand(query, connection);
+        setParametersToSqlCommand(command, paramNames, paramValues);
+        int affectedRows = command.ExecuteNonQuery();
+        handleAfterAction();
+
+        return affectedRows == 1; //Single Datarow is affected
+    }
+
+    public bool executeSingleSPQuery(String spName, String[] paramNames, Object[] paramValues)
+    {
+        handleBeforeAction();
+
+        SqlCommand command = new SqlCommand(spName, connection);
+        command.CommandType = CommandType.StoredProcedure;
         setParametersToSqlCommand(command, paramNames, paramValues);
         int affectedRows = command.ExecuteNonQuery();
         handleAfterAction();

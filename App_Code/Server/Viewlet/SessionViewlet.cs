@@ -52,7 +52,7 @@ public class SessionViewlet : MasterViewlet, SessionInterface
     {
         Session newSession = new Session(generateSessionId(), fkPerson, true, DateTime.Now);
 
-        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery(ServerConst.INSERT_SESSION_QUERY, 
+        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleSPQuery(ServerConst.INSERT_SESSION_PROCEDURE, 
             new string[] { "@sessionID", "@FkPerson", "@activeSession", "@lastActivity" },
             new object[] { newSession.sessionID, newSession.FK_Person, newSession.activeSession, newSession.lastActivity});
 
@@ -67,7 +67,7 @@ public class SessionViewlet : MasterViewlet, SessionInterface
     public Session updateSessionActivity(Session session)
     {
         session.lastActivity = DateTime.Now;
-        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Session SET lastActivity=@lastActivity, activeSession=@activeSession WHERE sessionID=@SessionID",
+        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleSPQuery(ServerConst.SESSION_ACTIVITY_PROCEDURE,
             new string[] {"@SessionID", "@lastActivity", "@activeSession" },
             new object[] { session.sessionID,session.lastActivity, true/*falls false wieder auf true!*/});
         if(!executionState)
