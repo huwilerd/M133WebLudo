@@ -26,6 +26,26 @@
 				    <asp:RequiredFieldValidator class="error" ID="requiredInputNameFieldValidator" ControlToValidate="SpielNameField" ErrorMessage="Bitte ausfüllen" runat="server" />
                 </td>
 		        </tr>
+
+                <tr>
+                <td>
+				    <label for="SpielDescriptionField">Beschreibung:</label>	 
+                </td>
+                <td>     
+				    <asp:TextBox ID="SpielDescriptionField" runat="server" />
+				    <asp:RequiredFieldValidator class="error" ID="SpielDescriptionFieldValidator" ControlToValidate="SpielDescriptionField" ErrorMessage="Bitte ausfüllen" runat="server" />
+                </td>
+		        </tr>
+
+                 <tr>
+                <td>
+				    <label for="SpielImageLinkField">Bild-Url:</label>	 
+                </td>
+                <td>     
+				    <asp:TextBox ID="SpielImageLinkField" runat="server" />
+                </td>
+		        </tr>
+
                 <tr>
                 <td>
 				    <label for="VerlagField">Verlag:</label>	 

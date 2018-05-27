@@ -15,8 +15,6 @@ public partial class _Default : SecureMasterPage
     protected override void setupPageWithSession(Session session)
     {
         base.setupPageWithSession(session);
-        /*int userId = session.userId;
-        User user = DataProvider.getInstance().getUserFromId(userId);*/
         setupInformationBasedOnUrlParameters();
 
     }
@@ -83,6 +81,10 @@ public partial class _Default : SecureMasterPage
                     
             }
         }
+        else
+        {
+            VonDateField.Text = DateTime.Now.ToString("yyyy-MM-dd");
+        }
     }
 
     private int getGameId()
@@ -126,10 +128,10 @@ public partial class _Default : SecureMasterPage
                 servererror.InnerText = "Bitte füllen Sie das Datumsfeld aus";
                 hasError = true;
             }
-            DateTime fromDate = Convert.ToDateTime(VonDateField.Text);
+            DateTime fromDate = Convert.ToDateTime(getValueFromForm("VonDateField"));
             DateTime toDate = fromDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
 
-            if(fromDate.Date <= DateTime.Now)
+            if(fromDate.Date < DateTime.Now.Date)
             {
                 servererror.InnerText = "Die Ausleihe darf nicht in der Vergangenheit liegen.";
                 hasError = true;
@@ -151,6 +153,11 @@ public partial class _Default : SecureMasterPage
         {
             Response.Redirect("../secure/MainMenu.aspx?page=1");
         }
+    }
+
+    private String getValueFromForm(String key)
+    {
+        return Request.Form[key];
     }
 
     protected override string getPageName()

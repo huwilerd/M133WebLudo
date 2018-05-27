@@ -14,8 +14,10 @@ public class Spiel
     public int lagerbestand;
     public int tarifkategorie;
     public int kategorie;
+    public String imageLink;
+    public String description;
 
-    public Spiel(int iD_Spiel, string name, string verlag, int lagerbestand, int tarifkategorie, int kategorie)
+    public Spiel(int iD_Spiel, string name, string verlag, int lagerbestand, int tarifkategorie, int kategorie, string imageLink, string description)
     {
         ID_Spiel = iD_Spiel;
         this.name = name;
@@ -23,5 +25,7 @@ public class Spiel
         this.lagerbestand = lagerbestand;
         this.tarifkategorie = tarifkategorie;
         this.kategorie = kategorie;
+        this.imageLink = imageLink;
+        this.description = description;
     }
 }

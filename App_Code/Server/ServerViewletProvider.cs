@@ -25,6 +25,7 @@ public class ServerViewletProvider
     private PersonViewlet personViewlet;
     private EmployeeViewlet employeeViewlet;
     private HtmlViewlet htmlViewlet;
+    private AdminInterface adminInterface;
 
     private ServerViewletProvider()
     {
@@ -78,6 +79,19 @@ public class ServerViewletProvider
             htmlViewlet = new HtmlViewlet();
         }
         return htmlViewlet;
+    }
+
+    public AdminInterface GetAdminInterface(Session session)
+    {
+        if(adminInterface == null)
+        {
+            adminInterface = new AdminViewlet();
+        }
+        if (!session.sessionRole.Equals(SessionRole.Administrator))
+        {
+            throw new Exception("Admin-Funktionen könnten nur von einem Administrator vollzogen werden.");
+        }
+        return adminInterface;
     }
 
     public InstallViewlet GetInstallViewlet()

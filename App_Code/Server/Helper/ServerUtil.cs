@@ -70,6 +70,28 @@ public class ServerUtil
         return session;
     }
 
+    public static String getKategorieNameFromId(int kategorieId, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> kategorieResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Kategorie WHERE ID_Kategorie=@idKategorie",
+            new string[] { "@idKategorie" }, new object[] { kategorieId });
+        if (kategorieResult.Count == 0)
+        {
+            return null;
+        }
+        return Convert.ToString(kategorieResult[0]["Name"]);
+    }
+
+    public static String getTarifKategorieNameFromId(int tarifKategorieId, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> kategorieResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM TarifKategorie WHERE ID_TarifKategorie=@idKategorie",
+            new string[] { "@idKategorie" }, new object[] { tarifKategorieId });
+        if (kategorieResult.Count == 0)
+        {
+            return null;
+        }
+        return Convert.ToString(kategorieResult[0]["Name"]);
+    }
+
     public static Person getPersonFromId(int personID, SqlConnection openConnection)
     {
         List<Dictionary<String, Object>> personResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Person WHERE ID_Person=@idPerson",

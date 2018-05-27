@@ -14,9 +14,9 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
         {
             newSpiel.ID_Spiel = ServerUtil.generateNewIdForTable("Spiel", "ID_Spiel", getOpenConnection());
         }
-        bool addState = CommandUtil.create(getOpenConnection()).executeSingleQuery("INSERT INTO Spiel VALUES(@gameId, @name, @verlag, @lagerbestand, @fktarifkategorie, @fkkategorie)",
-            new string[] {"@gameId", "@name", "@verlag", "@lagerbestand", "@fktarifkategorie", "@fkkategorie" },
-            new object[] { newSpiel.ID_Spiel, newSpiel.name, newSpiel.verlag, newSpiel.lagerbestand, newSpiel.tarifkategorie, newSpiel.kategorie});
+        bool addState = CommandUtil.create(getOpenConnection()).executeSingleQuery("INSERT INTO Spiel VALUES(@gameId, @name, @verlag, @lagerbestand, @fktarifkategorie, @fkkategorie, @imageLink, @description)",
+            new string[] {"@gameId", "@name", "@verlag", "@lagerbestand", "@fktarifkategorie", "@fkkategorie", "@imageLink", "@description" },
+            new object[] { newSpiel.ID_Spiel, newSpiel.name, newSpiel.verlag, newSpiel.lagerbestand, newSpiel.tarifkategorie, newSpiel.kategorie, newSpiel.imageLink, newSpiel.description});
         return addState ? createResponse(1, "Spiel erfolgreich hinzugefügt", null, true) : createResponse(1, "Spiel konnte nicht hinzugefügt werden", null, false);
     }
 
@@ -84,9 +84,9 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
     public ServerResponse updateGame(Spiel updatedSpiel)
     {
         //Todo validate with Future ValidateUtil
-        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("Update Spiel Set Name=@name, Verlag=@verlag, Lagerbestand=@lagerbestand, FK_Tarifkategorie=@fktarifkategorie, FK_Kategorie=@fkkategorie WHERE ID_Spiel=@idSpiel",
-            new string[] { "@name", "@verlag", "@lagerbestand", "@fktarifkategorie","@fkkategorie","@idSpiel"},
-            new object[] { updatedSpiel.name, updatedSpiel.verlag, updatedSpiel.lagerbestand, updatedSpiel.tarifkategorie, updatedSpiel.kategorie, updatedSpiel.ID_Spiel});
+        bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("Update Spiel Set Name=@name, Verlag=@verlag, Lagerbestand=@lagerbestand, FK_Tarifkategorie=@fktarifkategorie, FK_Kategorie=@fkkategorie, Image_Link=@imageLink, Description=@description WHERE ID_Spiel=@idSpiel",
+            new string[] { "@name", "@verlag", "@lagerbestand", "@fktarifkategorie","@fkkategorie","@idSpiel", "@imageLink", "@description"},
+            new object[] { updatedSpiel.name, updatedSpiel.verlag, updatedSpiel.lagerbestand, updatedSpiel.tarifkategorie, updatedSpiel.kategorie, updatedSpiel.ID_Spiel, updatedSpiel.imageLink, updatedSpiel.description});
         return createResponse(1, "Spiel geupdated", null, executionState);
     }
 }

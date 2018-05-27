@@ -17,7 +17,7 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
             if(clientsData.getResponseStatus())
             {
                 List<Person> clientList = (List<Person>)clientsData.getResponseObject();
-                return HtmlUtil.generateClientTable(clientList);
+                return HtmlUtil.generateClientTable(clientList, session.sessionRole.Equals(SessionRole.Administrator), getOpenConnection());
             } else
             {
                 return HtmlUtil.generateErrorMessage("Kunden konnten nicht geladen werden.");
@@ -32,7 +32,7 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
     {
         if (session.sessionRole.Equals(SessionRole.Administrator))
         {
-            AdminInterface adminInterface = (AdminInterface)ServerViewletProvider.getInstance().GetPersonViewlet();
+            AdminInterface adminInterface = ServerViewletProvider.getInstance().GetAdminInterface(session);
             ServerResponse employeeData = adminInterface.getAllEmployees();
             if (employeeData.getResponseStatus())
             {
@@ -54,7 +54,7 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
             List<Spiel> gameList = (List<Spiel>)allGamesResponse.getResponseObject();
             if (manageView)
             {
-                return HtmlUtil.generateGameOverviewListHtml(gameList);
+                return HtmlUtil.generateGameOverviewListHtml(gameList, getOpenConnection());
             }
             return HtmlUtil.generateGameFlexListHtml(gameList);
         }
@@ -109,7 +109,7 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
             }
 
             int amountEmployees = -1;
-            ServerResponse employeeData = ((AdminInterface)ServerViewletProvider.getInstance().GetPersonViewlet()).getAllEmployees();
+            ServerResponse employeeData = ServerViewletProvider.getInstance().GetAdminInterface(session).getAllEmployees();
             if (employeeData.getResponseStatus())
             {
                 List<Person> allEmployees = (List<Person>)employeeData.getResponseObject();

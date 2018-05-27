@@ -82,6 +82,10 @@ public interface EmployeeInterface
 public interface AdminInterface
 {
     ServerResponse getAllEmployees();
+
+    ServerResponse makeEmployee(int fkPerson);
+
+    ServerResponse removeEmployee(Session session, int fkPerson);
 }
 
 public interface HtmlInterface

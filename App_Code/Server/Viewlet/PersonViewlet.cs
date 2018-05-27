@@ -6,7 +6,7 @@ using System.Web;
 /// <summary>
 /// Zusammenfassungsbeschreibung für PersonViewlet
 /// </summary>
-public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInterface, AdminInterface
+public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInterface
 {
     public ServerResponse createHire(Session session, Hire hire)
     {
@@ -94,25 +94,6 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
         return executeState ? createResponse(1, "Benutzer wurde geupdated", null, true) : createResponse(1, "Person konnte nicht geupdated werden", null, false);
     }
 
-    public ServerResponse getAllEmployees()
-    {
-        List<Dictionary<String, Object>> employeeData = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Mitarbeiter",
-                null, null);
-        List<int> employeeIds = new List<int>();
-        employeeData.ForEach(delegate (Dictionary<String, Object> row)
-        {
-            employeeIds.Add(Convert.ToInt32(row["FK_Person"]));
-        });
-
-        List<Person> employeeList = new List<Person>();
-        employeeIds.ForEach(delegate (int fkPerson)
-        {
-            employeeList.Add(ServerUtil.getPersonFromId(fkPerson, getOpenConnection()));
-        });
-
-        return createResponse(1, "Mitarbeiterliste", employeeList, true);
-    }
-
     public ServerResponse getSingleGame(int gameId)
     {
         Spiel spiel = ServerUtil.getGameForId(gameId, getOpenConnection());
@@ -139,4 +120,6 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
         return createResponse(1, "Ausleihe gefunden", hire, true);
     }
+
+    
 }

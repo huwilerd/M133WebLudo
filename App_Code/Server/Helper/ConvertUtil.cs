@@ -28,7 +28,9 @@ public class ConvertUtil
             Convert.ToString(data["Verlag"]),
             Convert.ToInt32(data["Lagerbestand"]),
             Convert.ToInt32(data["FK_Tarifkategorie"]),
-            Convert.ToInt32(data["FK_Kategorie"]));
+            Convert.ToInt32(data["FK_Kategorie"]),
+            Convert.ToString(convertDBNullToEmpty(data["Image_Link"])),
+            Convert.ToString(convertDBNullToEmpty(data["Description"])));
     }
 
     public static Hire getHire(Dictionary<String, Object> data)

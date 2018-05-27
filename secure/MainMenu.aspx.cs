@@ -72,6 +72,47 @@ public partial class MainMenu : SecureMasterPage
                             }
                         }
                         break;
+                    case "upgrade":
+                        int emplId = getIntFromParameter("empl");
+                        if(emplId > 0)
+                        {
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
+                            {
+                                ServerResponse upgradeClientToClient = GetViewletProvider().GetAdminInterface(getCurrentSession()).makeEmployee(emplId);
+                                if (upgradeClientToClient.getResponseStatus())
+                                {
+                                    Response.Redirect("MainMenu.aspx?page=4");
+                                }
+                                else
+                                {
+                                    flexContainer.InnerHtml = "Aktion konnte nicht durchgeführt werden: " + upgradeClientToClient.getResponseMessage();
+                                }
+                            } else
+                            {
+                                flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
+                            }
+                        }
+                        break;
+                    case "downgrade":
+                        int downgradeEmplId = getIntFromParameter("empl");
+                        if(downgradeEmplId > 0)
+                        {
+                            if(getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
+                            {
+                                ServerResponse downgradeEmployeeToClient = GetViewletProvider().GetAdminInterface(getCurrentSession()).removeEmployee(getCurrentSession(), downgradeEmplId);
+                                if(downgradeEmployeeToClient.getResponseStatus())
+                                {
+                                    Response.Redirect("MainMenu.aspx?page=4");
+                                } else
+                                {
+                                    flexContainer.InnerHtml = "Aktion konnte nicht durchgeführt werden: " + downgradeEmployeeToClient.getResponseMessage();
+                                }
+                            } else
+                            {
+                                flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
+                            }
+                        }
+                        break;
                 }
             }
             else

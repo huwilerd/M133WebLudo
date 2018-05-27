@@ -58,7 +58,7 @@ public class HtmlUtil
         {
             builder.Append("<table>");
             builder.Append("<tr><th colspan='3'><h2>Alle Mitarbeiter</h2></th></tr>");
-            builder.Append("<tr><th>ID</th><th>Name</th><th>Adresse</th><th>Einstiegsdatum</th></tr>");
+            builder.Append("<tr><th>ID</th><th>Name</th><th>Adresse</th><th>Einstiegsdatum</th><th>Aktionen</th></tr>");
             employeeList.ForEach(delegate (Person employee)
             {
                 builder.Append(createManageTableRowEmployee(employee));
@@ -76,7 +76,7 @@ public class HtmlUtil
     /**
      * For small overview page 
      **/
-    public static String generateGameOverviewListHtml(List<Spiel> gameList)
+    public static String generateGameOverviewListHtml(List<Spiel> gameList, SqlConnection openConnection)
     {
         StringBuilder builder = new StringBuilder();
 
@@ -85,7 +85,7 @@ public class HtmlUtil
         builder.Append("<tr><th>Spiel-Nr.</th><th>Spielname</th><th>Verlang</th><th>Kategorie</th><th>Tarifkategorie</th><th>Lagerbestand</th><th>Aktionen</th></tr>");
         gameList.ForEach(delegate (Spiel spiel)
         {
-            builder.Append(createOverviewGameElement(spiel));
+            builder.Append(createOverviewGameElement(spiel, openConnection));
         });
         builder.Append("</table>");
 
@@ -104,34 +104,37 @@ public class HtmlUtil
         {
             bool activeStatus = spiel.lagerbestand > 0;
             String buttonText = activeStatus ? "Jetzt ausleihen" : "Nicht verfügbar";
-            builder.Append(createFlexGameElement(null, spiel, Convert.ToString(spiel.tarifkategorie)/*Todo: Description game*/, buttonText, activeStatus));
+            builder.Append(createFlexGameElement(null, spiel, spiel.description, buttonText, activeStatus));
         });
         return builder.ToString();
     }
 
     public static String createManageTableRowEmployee(Person employee)
     {
-        return "<tr><td>" + employee.ID_Person + "</td><td>" + employee.Name + "</td><td>" + employee.strasse + ", "+employee.postleitzahl+" "+employee.ort+", "+employee.land+"</td><td>"+ FormatUtil.formatDate(employee.Einstiegsdatum, false)+"</td></tr>";
+        String actionLinkHtml = "<a href=\"MainMenu.aspx?action=downgrade&empl="+employee.ID_Person+"\">Entfernen</a>";
+        return "<tr><td>" + employee.ID_Person + "</td><td>" + employee.Name + "</td><td>" + employee.strasse + ", "+employee.postleitzahl+" "+employee.ort+", "+employee.land+"</td><td>"+ FormatUtil.formatDate(employee.Einstiegsdatum, false)+"</td><td>"+actionLinkHtml+"</td></tr>";
     }
 
-    public static String createManageTableRowClient(Person client)
+    public static String createManageTableRowClient(Person client, bool showAdminAction)
     {
         String mitgliedschaftsText = client.mitgliedschaft == null || client.mitgliedschaft.ID_Mitgliedschaft == -1 ? "Nicht vorhanden" : "Vorhanden";
-        return "<tr><td>" + client.ID_Person + "</td><td>" + client.Name + "</td><td>"+client.Geschlecht+"</td><td>"+ FormatUtil.formatDate(client.Geburtsdatum, false)+"</td><td>" + client.strasse + ", " + client.postleitzahl + " " + client.ort + ", " + client.land + "</td><td>"+ FormatUtil.formatDate(client.Einstiegsdatum, false)+"</td><td>"+mitgliedschaftsText+"</td></tr>";
+        String clientActionLinkHtml = showAdminAction ? "<a href=\"MainMenu.aspx?action=upgrade&empl=" + client.ID_Person + "\">Zu Mitarbeiter machen</a>" : "-";
+        return "<tr><td>" + client.ID_Person + "</td><td>" + client.Name + "</td><td>"+client.Geschlecht+"</td><td>"+ FormatUtil.formatDate(client.Geburtsdatum, false)+"</td><td>" + client.strasse + ", " + client.postleitzahl + " " + client.ort + ", " + client.land + "</td><td>"+ FormatUtil.formatDate(client.Einstiegsdatum, false)+"</td><td>"+mitgliedschaftsText+"</td><td>"+ clientActionLinkHtml + "</td<</tr>";
     }
 
-    public static String createOverviewGameElement(Spiel game)
+    public static String createOverviewGameElement(Spiel game, SqlConnection openConnection)
     {
         String actionLinkHtml = "<a href=\"EditGame.aspx?action=edit&page=5&game="+game.ID_Spiel+ "\">Bearbeiten</a>";
-        return "<tr><td>" + game.ID_Spiel + "</td><td>" + game.name + "</td><td>" + game.verlag + "</td><td>"+game.kategorie+"</td><td>"+game.tarifkategorie+"</td><td>"+game.lagerbestand+"</td><td>"+actionLinkHtml+"</td></tr>";
+        return "<tr><td>" + game.ID_Spiel + "</td><td>" + game.name + "</td><td>" + game.verlag + "</td><td>"+ServerUtil.getKategorieNameFromId(game.kategorie, openConnection)+"</td><td>"+ServerUtil.getTarifKategorieNameFromId(game.tarifkategorie, openConnection)+"</td><td>"+game.lagerbestand+"</td><td>"+actionLinkHtml+"</td></tr>";
     }
 
     public static String createFlexGameElement(Hire hire, Spiel game, String descriptionText, String buttonText, bool active)
     {
         String actionParams = hire == null ? "action=0" : "action=1&hire=" + hire.ID_Ausleihe;
+        String itemPicture = game.imageLink == null || game.imageLink == "" ? "https://wwwtalks.com/wp-content/uploads/2018/04/default-blog.jpg" : game.imageLink;
         StringBuilder html = new StringBuilder();
         html.Append("<div class=\"flexItem\">");
-        html.Append("<div class=\"mainItemImage\"> <img src=\"https://wwwtalks.com/wp-content/uploads/2018/04/default-blog.jpg\" /></div>");
+        html.Append("<div class=\"mainItemImage\"> <img src=\""+itemPicture+"\" /></div>");
         html.Append("<div class=\"mainItemTitle\"><h1>" + game.name + "</h1><p>" + descriptionText + "</p></div>");
         if (active)
         {
@@ -160,7 +163,7 @@ public class HtmlUtil
         return builder.ToString();
     }
 
-    public static String generateClientTable(List<Person> clientList)
+    public static String generateClientTable(List<Person> clientList, bool showAdminAction, SqlConnection openConnection)
     {
         StringBuilder builder = new StringBuilder();
 
@@ -168,10 +171,11 @@ public class HtmlUtil
         {
             builder.Append("<table>");
             builder.Append("<tr><th colspan='3'><h2>Alle Kunden</h2></th></tr>");
-            builder.Append("<tr><th>ID</th><th>Name</th><th>Geschlecht</th><th>Geburtsdatum</th><th>Adresse</th><th>Einstiegsdatum</th><th>Mitgliedschaft</th></tr>");
+            builder.Append("<tr><th>ID</th><th>Name</th><th>Geschlecht</th><th>Geburtsdatum</th><th>Adresse</th><th>Einstiegsdatum</th><th>Mitgliedschaft</th><th>Aktionen</th></tr>");
             clientList.ForEach(delegate (Person client)
             {
-                builder.Append(createManageTableRowClient(client));
+                bool showLinkButton = !ServerUtil.isEmployee(client.ID_Person, openConnection);
+                builder.Append(createManageTableRowClient(client, showAdminAction && showLinkButton));
             });
             builder.Append("</table>");
         }

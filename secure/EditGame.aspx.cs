@@ -43,8 +43,10 @@ public partial class _Default : SecureMasterPage
         int newLagerbestand = Convert.ToInt32(getValueFromForm("LagerbestandField"));
         int kategorie = Convert.ToInt32(Request.Form["KategorieField"]);
         int tarifKategorie = Convert.ToInt32(Request.Form["TarifKategorieField"]);
+        String newGameDescription = getValueFromForm("SpielDescriptionField");
+        String newGameLink = getValueFromForm("SpielImageLinkField");
 
-        Spiel updatedGame = new Spiel(gameId, newGameName, newVerlagName, newLagerbestand, tarifKategorie, kategorie);
+        Spiel updatedGame = new Spiel(gameId, newGameName, newVerlagName, newLagerbestand, tarifKategorie, kategorie, newGameLink, newGameDescription);
 
         //todo validate
 
@@ -134,6 +136,8 @@ public partial class _Default : SecureMasterPage
         LagerbestandField.Text = Convert.ToString(spiel.lagerbestand);
         KategorieField.Value = KategorieField.Items.FindByValue(Convert.ToString(spiel.kategorie)).Value;
         TarifKategorieField.Value = TarifKategorieField.Items.FindByValue(Convert.ToString(spiel.tarifkategorie)).Value;
+        SpielDescriptionField.Text = spiel.description;
+        SpielImageLinkField.Text = spiel.imageLink;
     }
 
     private void handleNewGame()

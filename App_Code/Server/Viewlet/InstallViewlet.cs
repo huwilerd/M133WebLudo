@@ -23,10 +23,10 @@ public class InstallViewlet : MasterViewlet
     public static List<TarifKategorie> tarifKategories = new List<TarifKategorie> { new TarifKategorie(100, "Familientarif", 10, 5),
                                                                                     new TarifKategorie(150, "Fantarif", 8, 10),
                                                                                     new TarifKategorie(200, "Normaltarif", 15, 10)  };
-    public static List<Spiel> spiele = new List<Spiel> { new Spiel(1000, "Monopoly", "Orell Füssli", 10, tarifKategories[0].ID_TarifKategorie, kategories[0].ID_Kategorie),
-                                                         new Spiel(1012, "Mensch ärgere dich nicht", "Hug Verlag", 5, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie),
-                                                         new Spiel(1015, "Schach", "GBSSG", 5, tarifKategories[2].ID_TarifKategorie, kategories[2].ID_Kategorie),
-                                                         new Spiel(1080, "Easy Coding", "GBSSG", 0, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie) };
+    public static List<Spiel> spiele = new List<Spiel> { new Spiel(1000, "Monopoly", "Orell Füssli", 10, tarifKategories[0].ID_TarifKategorie, kategories[0].ID_Kategorie, "https://bit.ly/2IUUQ3H", "Monopoly (engl. „Monopol“) ist ein bekanntes US-amerikanisches Brettspiel. Ziel des Spiels ist es, ein Grundstücksimperium aufzubauen und alle anderen ..."),
+                                                         new Spiel(1012, "Mensch ärgere dich nicht", "Hug Verlag", 5, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie, "https://bit.ly/2KWmIoH", "Mensch ärgere Dich nicht ist ein Gesellschaftsspiel für zwei bis sechs Personen. Es zählt zu den Klassikern unter den deutschen Brettspielen und ist ein ..."),
+                                                         new Spiel(1015, "Schach", "GBSSG", 5, tarifKategories[2].ID_TarifKategorie, kategories[2].ID_Kategorie, "https://bit.ly/2KVJ4GE", "Schach (von persisch šāh Schah / شاه /‚König' – daher die Bezeichnung „das königliche Spiel“) ist ein strategisches Brettspiel, bei dem zwei Spieler ..."),
+                                                         new Spiel(1080, "Schiffe versenken", "GBSSG", 0, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie, "https://bit.ly/2L2qYD3", "Schiffe versenken, auch Schiffchen versenken, Flottenmanöver, Kreuzerkrieg oder Seeschlacht genannt, ist ein Spiel mit einfachen Mitteln. Es besitzt ...") };
     public static Verband verband = new Verband(20, "St. Galler Ludothekverband");
     public static Ludothek ludothek = new Ludothek(10, "Ludothek Gbs", "Demutsstrasse 42", 4200, "Weinfelden", verband.ID_Verband);
 
@@ -38,7 +38,6 @@ public class InstallViewlet : MasterViewlet
         if (checkIfInstallIsRequired())
         {
             installInitialKategories();
-            installInitialGames();
             installLudothek();
 
             installInitialUsers();
@@ -106,6 +105,9 @@ public class InstallViewlet : MasterViewlet
         installPersonInformation(EMPLOYEE_USER, "Mitarbeiter");
         installEmployee(EMPLOYEE_USER);
         installEmployee(ADMIN_USER);
+
+        installInitialGames();
+
         installFilialleiter(ADMIN_USER);
         installInitialHires(CLIENT_USER);
     }
