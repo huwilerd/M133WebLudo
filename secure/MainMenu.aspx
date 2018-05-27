@@ -32,6 +32,7 @@
         <aside>
             <div id="containterSideBar">
                 <div class="sideElement">
+                    <h3>Ausleihen</h3>
                     <asp:LinkButton ID="newestGamesLink" Text="Neuste Spiele" OnClick="showNewestGames" runat="server" />
                 </div>
                 <div class="sideElement">
@@ -41,13 +42,17 @@
                     <asp:LinkButton ID="closedHiresLink" Text="Abgeschlossene Ausleihen" OnClick="showClosedHires" runat="server" />
                 </div>
                 <div class="sideElement">
-                    <asp:LinkButton ID="allEmployees" Text="Mitarbeiter Verwalten" OnClick="showAllEmployees"  runat="server" />
+                    <h3 id="manageTitle" runat="server">Verwaltung</h3>
+                    <asp:LinkButton ID="allHires" Text="Ausleihen Verwalten" OnClick="showAllHires" runat="server" />
+                </div>
+                <div class="sideElement">
+                    <asp:LinkButton ID="allClients" Text="Kunden Verwalten" OnClick="showAllClients" runat="server" />
                 </div>
                 <div class="sideElement">
                     <asp:LinkButton ID="allGames" Text="Spiele Verwalten" OnClick="showAllGames" runat="server" />
                 </div>
                 <div class="sideElement">
-                    <asp:LinkButton ID="allClients" Text="Kunden Verwalten" OnClick="showAllClients" runat="server" />
+                    <asp:LinkButton ID="allEmployees" Text="Mitarbeiter Verwalten" OnClick="showAllEmployees"  runat="server" />
                 </div>
                 <div class="sideElement">
                     <asp:LinkButton ID="dashboard" Text="Gesamtübersicht" OnClick="showDashboard" runat="server" />
@@ -88,48 +93,6 @@
                 </div>  
             </div>
 
-            <div id="addGameForm" runat="server">
-                        
-                <div class="row">
-                    <h1>Neues Spiel hinzufügen</h1>
-                </div>
-
-                <div class="row">
-                    <label for="gameNameField">Spielname:</label>
-                    <asp:TextBox ID="gameNameField" runat="server" CssClass="input100" type="text" name="gameNameField" placeholder=""/>
-                </div>
-
-                <div class="row">
-                    <label for="gameNameField">Verlag:</label>
-                    <asp:TextBox ID="verlagField" runat="server" CssClass="input100" type="text" name="verlagField" placeholder=""/>
-                </div>
-
-                 <div class="row">
-                    <label for="lagerbestandField">Lagerbestand:</label>
-                    <asp:TextBox ID="lagerbestandField" runat="server" CssClass="input100" type="text" name="lagerbestandField" placeholder=""/>
-                </div>
-
-                <div class="row">
-                    <label for="tarifkategorieField">Tarifkategorie:</label>
-                     <select id="tarifkategorieField" runat="server" required>
-                        <option value="Männlich" selected="selected">Kinder</option>
-                        <option value="Weiblich">Frau</option>
-                    </select>
-                </div>
-
-                <div class="row">
-                    <label for="kategorieField">Kategorie:</label>
-                     <select id="Select1" runat="server" required>
-                        <option value="Männlich" selected="selected">Kinder</option>
-                        <option value="Weiblich">Frau</option>
-                    </select>
-                </div>
-
-                <div class="row">
-                    <asp:LinkButton ID="AddGameButton" Text="Spiel hinzufügen" OnClick="addGame" runat="server" />
-                </div>"
-
-            </div>
             </form>
         </main>
     </div>

@@ -24,12 +24,14 @@ public partial class _Default : SecureMasterPage
             {
                 AnredeField.Value = AnredeField.Items.FindByText(currentPerson.Geschlecht == "Männlich" ? "Herr" : "Frau").Value;
                 NameField.Text = currentPerson.Name;
-                GeburtsdatumField.Text = currentPerson.Geburtsdatum.ToString();
+                GeburtsdatumField.Text = currentPerson.Geburtsdatum.ToString("yyyy-MM-dd");
                 StrasseField.Text = currentPerson.strasse;
                 PLZField.Text = Convert.ToString(currentPerson.postleitzahl);
                 OrtField.Text = currentPerson.ort;
                 LandField.Text = currentPerson.land;
-                showAccountFields(false);
+                ServerResponse response = GetViewletProvider().GetSessionInterface().hasToFillInInformation(getCurrentSession());
+                bool canShowAccountFields = !(response.getResponseStatus() && ((bool)response.getResponseObject()));
+                showAccountFields(canShowAccountFields);
             }
 
             Session currentSession = getCurrentSession();
@@ -47,19 +49,10 @@ public partial class _Default : SecureMasterPage
 
     private void showAccountFields(bool show)
     {
-        if (show)
-        {
-            EmailFieldLabel.Visible = true;
-            PasswortFieldLabel.Visible = true;
-            EmailField.CssClass = "";
-            PasswortField.CssClass = "";
-        } else
-        {
-            EmailFieldLabel.Visible = false;
-            PasswortFieldLabel.Visible = false;
-            EmailField.CssClass = "hide";
-            PasswortField.CssClass = "hide";
-        }
+        EmailFieldLabel.Visible = show;
+        PasswortFieldLabel.Visible = show;
+        EmailField.Visible = show;
+        PasswortField.Visible = show;
     }
 
     protected override void handlePostback()
@@ -117,7 +110,7 @@ public partial class _Default : SecureMasterPage
 
             if (PasswortField.Text != "")
             {
-                currentLoggedInUser.password = PasswortField.Text;
+                currentLoggedInUser.password = ServerUtil.hashPassword(PasswortField.Text);
                 userHasChanges = true;
             }
 

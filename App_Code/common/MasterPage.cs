@@ -164,4 +164,21 @@ public abstract class MasterPage : Page
         return null;
     }
 
+    protected String getStringFromParameter(String param)
+    {
+        return Request.QueryString[param];
+    }
+
+    protected int getIntFromParameter(String param)
+    {
+        String gameIdString = getStringFromParameter(param);
+        int gameId;
+        bool isNumeric = int.TryParse(gameIdString, out gameId);
+        if (isNumeric)
+        {
+            return gameId;
+        }
+        return -1;
+    }
+
 }

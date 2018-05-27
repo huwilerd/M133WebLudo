@@ -29,15 +29,23 @@ public interface SessionInterface
     ServerResponse destroySession(Session session);
 
     ServerResponse isSessionValid(Session session);
+
+    Session updateSessionActivity(Session session);
 }
 
 public interface ClientInterface
 {
     ServerResponse getOwnOpenHires(Session session);
 
+    ServerResponse getOwnClosedHires(Session session);
+
     ServerResponse getOwnHires(Session session);
 
     ServerResponse getAllGames();
+
+    ServerResponse getSingleGame(int gameId);
+
+    ServerResponse getSingleHire(int hireId, Session session);
 }
 
 public interface PersonFunctionInterface
@@ -61,9 +69,13 @@ public interface EmployeeInterface
 
     ServerResponse addNewGame(Spiel newSpiel);
 
+    ServerResponse updateGame(Spiel updatedSpiel);
+
     ServerResponse removeGame(Spiel spiel);
 
-    ServerResponse closeHire(Hire hire);
+    ServerResponse closeHire(int idHire);
+
+    ServerResponse removeHire(int idHire);
 
 }
 
@@ -77,6 +89,8 @@ public interface HtmlInterface
     String getAllHires(Session session);
 
     String getAllClients(Session session);
+
+    String getAllEmployees(Session session);
 
     String getOwnHires(Session session);
 

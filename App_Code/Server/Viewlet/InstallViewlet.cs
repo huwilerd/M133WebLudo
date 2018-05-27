@@ -25,7 +25,8 @@ public class InstallViewlet : MasterViewlet
                                                                                     new TarifKategorie(200, "Normaltarif", 15, 10)  };
     public static List<Spiel> spiele = new List<Spiel> { new Spiel(1000, "Monopoly", "Orell Füssli", 10, tarifKategories[0].ID_TarifKategorie, kategories[0].ID_Kategorie),
                                                          new Spiel(1012, "Mensch ärgere dich nicht", "Hug Verlag", 5, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie),
-                                                         new Spiel(1015, "Schach", "GBSSG", 5, tarifKategories[2].ID_TarifKategorie, kategories[2].ID_Kategorie)};
+                                                         new Spiel(1015, "Schach", "GBSSG", 5, tarifKategories[2].ID_TarifKategorie, kategories[2].ID_Kategorie),
+                                                         new Spiel(1080, "Easy Coding", "GBSSG", 0, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie) };
     public static Verband verband = new Verband(20, "St. Galler Ludothekverband");
     public static Ludothek ludothek = new Ludothek(10, "Ludothek Gbs", "Demutsstrasse 42", 4200, "Weinfelden", verband.ID_Verband);
 
@@ -42,6 +43,7 @@ public class InstallViewlet : MasterViewlet
 
             installInitialUsers();
             installMitgliedschaftToUser(EMPLOYEE_USER, ADMIN_PW);
+            installMitgliedschaftToUser(ADMIN_USER, ADMIN_PW);
 
             return createResponse(1, "Erfolgreich alle Nullerdaten installiert", null, /*no successful login*/false);
         }
@@ -76,9 +78,19 @@ public class InstallViewlet : MasterViewlet
         ServerViewletProvider provider = ServerViewletProvider.getInstance();
         spiele.ForEach(delegate (Spiel spiel)
         {
-            ServerResponse sampleGameOne = provider.GetEmployeeInterface().addNewGame(spiel);
+            ServerResponse sampleGameOne = provider.GetEmployeeInterface(getSession(EMPLOYEE_USER)).addNewGame(spiel);
             checkResponses(new ServerResponse[] { sampleGameOne });
         });
+    }
+
+    private Session getSession(String user)
+    {
+        ServerResponse response = ServerViewletProvider.getInstance().getAuthenticationViewlet().tryLogIn(user, ADMIN_PW);
+        if (response.getResponseStatus())
+        {
+            return (Session)response.getResponseObject();
+        }
+        return null;
     }
 
     private void installInitialUsers()
@@ -95,6 +107,7 @@ public class InstallViewlet : MasterViewlet
         installEmployee(EMPLOYEE_USER);
         installEmployee(ADMIN_USER);
         installFilialleiter(ADMIN_USER);
+        installInitialHires(CLIENT_USER);
     }
 
     private void installEmployee(String userEmail) 
@@ -183,8 +196,8 @@ public class InstallViewlet : MasterViewlet
             Session session = (Session) response.getResponseObject();
             if (session.activeSession) {
                 ServerViewletProvider.getInstance().GetPersonViewlet().createHire(session, new Hire(1, session.FK_Person, spiele[0].ID_Spiel, DateTime.Now, DateTime.Now.AddDays(7), false));
-                ServerViewletProvider.getInstance().GetPersonViewlet().createHire(session, new Hire(1, session.FK_Person, spiele[1].ID_Spiel, DateTime.Now.AddDays(-14), DateTime.Now.AddDays(-7), false));
-                ServerViewletProvider.getInstance().GetPersonViewlet().createHire(session, new Hire(1, session.FK_Person, spiele[2].ID_Spiel, DateTime.Now.AddDays(-54), DateTime.Now.AddDays(-21), true));
+                ServerViewletProvider.getInstance().GetPersonViewlet().createHire(session, new Hire(2, session.FK_Person, spiele[1].ID_Spiel, DateTime.Now.AddDays(-14), DateTime.Now.AddDays(-7), false));
+                ServerViewletProvider.getInstance().GetPersonViewlet().createHire(session, new Hire(3, session.FK_Person, spiele[2].ID_Spiel, DateTime.Now.AddDays(-54), DateTime.Now.AddDays(-21), true));
 
             } else
             {
@@ -205,7 +218,8 @@ public class InstallViewlet : MasterViewlet
             ServerResponse personResponse = ServerViewletProvider.getInstance().GetSessionInterface().getPersonFromSession(session);
             if(personResponse.getResponseStatus() && personResponse.getResponseObject()!=null)
             {
-                Mitgliedschaft newMitgliedschaft = new Mitgliedschaft(100, "In Benutzung", "Bezahlt", DateTime.Now.AddMonths(-3), DateTime.Now.AddMonths(9));
+                int generatedID = ServerUtil.generateNewIdForTable("Mitgliedschaft", "ID_Mitgliedschaft", getOpenConnection());
+                Mitgliedschaft newMitgliedschaft = new Mitgliedschaft(generatedID, "In Benutzung", "Bezahlt", DateTime.Now.AddMonths(-3), DateTime.Now.AddMonths(9));
                 bool newMtgState = ServerUtil.addMitgliedschaft(newMitgliedschaft, getOpenConnection());
                 if (!newMtgState)
                 {

@@ -6,11 +6,23 @@ using System.Web;
 /// <summary>
 /// Zusammenfassungsbeschreibung für PersonViewlet
 /// </summary>
-public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInterface
+public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInterface, AdminInterface
 {
     public ServerResponse createHire(Session session, Hire hire)
     {
-        throw new NotImplementedException();
+        ValidateResult validateResult = ValidateUtil.getInstance().validateNewHire(hire);
+        if (validateResult.validateStatus)
+        {
+            hire.ID_Ausleihe = ServerUtil.generateNewIdForTable("Ausleihe", "ID_Ausleihe", getOpenConnection());
+            if (ServerUtil.addHire(hire, getOpenConnection()))
+            {
+                return createResponse(1, "Ausleihe erfolgreich erstellt", null, true);
+            }
+            return createResponse(1, "Ausleihe konnte nicht erstellt werden", null, false);
+        } else
+        {
+            return createResponse(1, validateResult.validateMessage, null, false);
+        }
     }
 
     public ServerResponse getAllGames()
@@ -31,9 +43,22 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
         return createResponse(1, "Eigene Ausleihen", ownHireList, true);
     }
 
-    public ServerResponse getOwnOpenHires(Session session)
+    public ServerResponse getOwnClosedHires(Session session)
     {
         List<Dictionary<String, Object>> hireData = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Ausleihe WHERE FK_Person=@fkperson AND Bezahlt=1",
+                new string[] { "@fkperson" }, new object[] { session.FK_Person });
+
+        List<Hire> ownHireList = new List<Hire>();
+        hireData.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            ownHireList.Add(ConvertUtil.getHire(row));
+        });
+        return createResponse(1, "Eigene abgeschlossene Ausleihen", ownHireList, true);
+    }
+
+    public ServerResponse getOwnOpenHires(Session session)
+    {
+        List<Dictionary<String, Object>> hireData = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Ausleihe WHERE FK_Person=@fkperson AND Bezahlt=0",
                 new string[] { "@fkperson" }, new object[] { session.FK_Person });
 
         List<Hire> ownHireList = new List<Hire>();
@@ -46,7 +71,11 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
     public ServerResponse updateHire(Hire hire)
     {
-        throw new NotImplementedException();
+        bool executeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Ausleihe SET BisDatum=@bisDatum WHERE ID_Ausleihe=@idAusleihe",
+            new string[] { "@bisDatum", "@idAusleihe" },
+            new object[] { hire.BisDatum, hire.ID_Ausleihe });
+        return executeState ? createResponse(1, "Ausleihe wurde geupdated", null, true) : createResponse(1, "Ausleihe konnte nicht geupdated werden", null, false);
+
     }
 
     public ServerResponse updatePerson(Person person)
@@ -59,6 +88,55 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
     public ServerResponse updateUser(User user)
     {
-        throw new NotImplementedException();
+        bool executeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Benutzer SET mail=@mail, password=@password WHERE FK_Person=@idPerson",
+           new string[] { "@idPerson", "@mail", "@password" },
+           new object[] { user.userId, user.email, user.password });
+        return executeState ? createResponse(1, "Benutzer wurde geupdated", null, true) : createResponse(1, "Person konnte nicht geupdated werden", null, false);
+    }
+
+    public ServerResponse getAllEmployees()
+    {
+        List<Dictionary<String, Object>> employeeData = CommandUtil.create(getOpenConnection()).executeReader("SELECT * FROM Mitarbeiter",
+                null, null);
+        List<int> employeeIds = new List<int>();
+        employeeData.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            employeeIds.Add(Convert.ToInt32(row["FK_Person"]));
+        });
+
+        List<Person> employeeList = new List<Person>();
+        employeeIds.ForEach(delegate (int fkPerson)
+        {
+            employeeList.Add(ServerUtil.getPersonFromId(fkPerson, getOpenConnection()));
+        });
+
+        return createResponse(1, "Mitarbeiterliste", employeeList, true);
+    }
+
+    public ServerResponse getSingleGame(int gameId)
+    {
+        Spiel spiel = ServerUtil.getGameForId(gameId, getOpenConnection());
+        if(spiel != null)
+        {
+            return createResponse(1, "Spiel gefunden", spiel, true);
+        }
+        return createResponse(1, "Spiel nicht gefunden", null, false);
+    }
+
+    public ServerResponse getSingleHire(int hireId, Session session)
+    {
+        Hire hire = ServerUtil.getHireFromId(hireId, getOpenConnection());
+        ValidateResult validateResult = ValidateUtil.getInstance().validateGettingHire(hire, session);
+        if (!validateResult.validateStatus)
+        {
+            return createResponse(1, validateResult.validateMessage, null, false);   
+        }
+
+        if(hire==null)
+        {
+            return createResponse(1, "Keine Ausleihe gefunden", null, false);
+        }
+
+        return createResponse(1, "Ausleihe gefunden", hire, true);
     }
 }

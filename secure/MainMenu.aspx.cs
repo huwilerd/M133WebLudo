@@ -18,9 +18,113 @@ public partial class MainMenu : SecureMasterPage
         }
 
         handleSessionRole();
-        hideUnrequiredElements();
         setDefaultPage();
+        handleParameter();
 
+    }
+
+    private void handleParameter()
+    {
+        handlePageParam();
+        handleActionParam();
+    }
+
+    private void handleActionParam()
+    {
+        String actionParam = getStringFromParameter("action");
+
+        if (actionParam != null)
+        {
+            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator) ||
+                getCurrentSession().sessionRole.Equals(SessionRole.Employee))
+            {
+
+
+                switch (actionParam)
+                {
+                    case "delete":
+                        int hireId = getIntFromParameter("hire");
+                        if (hireId > 0)
+                        {
+                            ServerResponse deletedHireResponse = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).removeHire(hireId);
+                            if (deletedHireResponse.getResponseStatus())
+                            {
+                                Response.Redirect("MainMenu.aspx?page=3");
+                            }
+                            else
+                            {
+                                flexContainer.InnerText = "Aktion konnte nicht durchgeführt werden: " + deletedHireResponse.getResponseMessage();
+                            }
+                        }
+                        break;
+                    case "close":
+                        int toCloseHireId = getIntFromParameter("hire");
+                        if(toCloseHireId > 0)
+                        {
+                            ServerResponse closedHire = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).closeHire(toCloseHireId);
+                            if(closedHire.getResponseStatus())
+                            {
+                                Response.Redirect("MainMenu.aspx?page=3");
+                            } else
+                            {
+                                flexContainer.InnerText = "Aktion konnte nicht durchgeführt werden: " + closedHire.getResponseMessage();
+
+                            }
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                flexContainer.InnerText = "Keine Zugriffsberechtigung für diese Aktion.";
+            }
+        }
+    }
+
+    private void handlePageParam()
+    {
+        int pageParam = getIntFromParameter("page");
+
+        if (pageParam > 0)
+        {
+            switch (pageParam)
+            {
+                case 0:
+                    showNewestGames(null, null);
+                    break;
+                case 1:
+                    showCurrentHires(null, null);
+                    break;
+                case 2:
+                    showClosedHires(null, null);
+                    break;
+                case 3:
+                    showAllHires(null, null);
+                    break;
+                case 4:
+                    showAllClients(null, null);
+                    break;
+                case 5:
+                    /* Client doesn't have permission to see manage page of all games */
+                    if (!getCurrentSession().sessionRole.Equals(SessionRole.Client))
+                    {
+                        showAllGames(null, null);
+                    } else
+                    {
+                        showNewestGames(null, null);
+                    }
+                    break;
+                case 6:
+                    showAllEmployees(null, null);
+                    break;
+                case 7:
+                    showDashboard(null, null);
+                    break;
+                default:
+                    showCurrentHires(null, null);
+                    break;
+            }
+        }
     }
 
     private void setDefaultPage()
@@ -28,31 +132,36 @@ public partial class MainMenu : SecureMasterPage
         showCurrentHires(null, null);
     }
 
-    private void hideUnrequiredElements()
-    {
-        addGameForm.Visible = false;
-    }
-
     private void handleSessionRole()
     {
         SessionRole role = getCurrentSession().sessionRole;
         Console.WriteLine("SessionRolle ist: " + role.ToString());
+        allEmployees.Visible = false;
+        allClients.Visible = false;
+        allGames.Visible = false;
+        dashboard.Visible = false;
+        allHires.Visible = false;
+        manageTitle.Visible = false;
+
         switch (role)
         {
             case SessionRole.Client:
-                allEmployees.Visible = false;
-                allClients.Visible = false;
-                allGames.Visible = false;
-                dashboard.Visible = false;
                 Console.WriteLine("Ich bin Client");
                 break;
             case SessionRole.Employee:
                 allClients.Visible = true;
                 allGames.Visible = true;
+                allHires.Visible = true;
+                manageTitle.Visible = true;
                 Console.WriteLine("Ich bin Employee");
                 break;
             case SessionRole.Administrator:
+                allClients.Visible = true;
+                allGames.Visible = true;
+                allEmployees.Visible = true;
+                allHires.Visible = true;
                 dashboard.Visible = true;
+                manageTitle.Visible = true;
                 Console.WriteLine("Ich bin Administrator");
                 break;
         }
@@ -63,9 +172,9 @@ public partial class MainMenu : SecureMasterPage
         Console.Write("Es ist postback!");
     }
 
-    public virtual void addGame(Object sender, EventArgs e)
+    private void setError(String errorMessage)
     {
-
+        flexContainer.InnerHtml = errorMessage;
     }
 
     public virtual void showCreateHire(Object sender, EventArgs e)
@@ -106,19 +215,29 @@ public partial class MainMenu : SecureMasterPage
 
     public virtual void showAllEmployees(Object sender, EventArgs e)
     {
-
+        String allEmployeesHtml = GetViewletProvider().GetHtmlViewlet().getAllEmployees(getCurrentSession());
+        flexContainer.InnerHtml = allEmployeesHtml;
         setSelectedFilter("allEmpl");
     }
 
     public virtual void showAllClients(Object sender, EventArgs e)
     {
-
+        String allClientsHtml = GetViewletProvider().GetHtmlViewlet().getAllClients(getCurrentSession());
+        flexContainer.InnerHtml = allClientsHtml;
         setSelectedFilter("allClients");
+    }
+
+    public virtual void showAllHires(Object sender, EventArgs e)
+    {
+        String allHiresHtml = GetViewletProvider().GetHtmlViewlet().getAllHires(getCurrentSession());
+        flexContainer.InnerHtml = allHiresHtml;
+        setSelectedFilter("allHires");
     }
 
     public virtual void showDashboard(Object sender, EventArgs e)
     {
-
+        String dashboardHtml = GetViewletProvider().GetHtmlViewlet().getDashboard(getCurrentSession());
+        flexContainer.InnerHtml = dashboardHtml;
         setSelectedFilter("dashboard");
     }
 
@@ -131,9 +250,8 @@ public partial class MainMenu : SecureMasterPage
         allEmployees.CssClass = "";
         allGames.CssClass = "";
         dashboard.CssClass = "";
-        addGameForm.Visible = false;
-
-
+        allHires.CssClass = "";
+      
         String selectedCssClass = "selected";
         switch (filtername)
         {
@@ -151,7 +269,6 @@ public partial class MainMenu : SecureMasterPage
                 break;
             case "allGames":
                 allGames.CssClass = selectedCssClass;
-                addGameForm.Visible = true;
                 break;
             case "allClients":
                 allClients.CssClass = selectedCssClass;
@@ -159,8 +276,12 @@ public partial class MainMenu : SecureMasterPage
             case "dashboard":
                 dashboard.CssClass = selectedCssClass;
                 break;
+            case "allHires":
+                allHires.CssClass = selectedCssClass;
+                break;
 
         }
+        sessionActivity();
     }
 
 }

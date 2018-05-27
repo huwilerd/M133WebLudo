@@ -80,5 +80,10 @@ public abstract class SecureMasterPage : MasterPage
         return html.ToString();
     }
 
+    protected void sessionActivity()
+    {
+        GetViewletProvider().GetSessionInterface().updateSessionActivity(getCurrentSession());
+    }
+
     
 }

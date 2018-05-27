@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 /// <summary>
@@ -10,12 +11,44 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
 {
     public string getAllClients(Session session)
     {
-        return "Alle Kunden";
+        if(!session.sessionRole.Equals(SessionRole.Client))
+        {
+            ServerResponse clientsData = ServerViewletProvider.getInstance().GetEmployeeInterface(session).getAllClients();
+            if(clientsData.getResponseStatus())
+            {
+                List<Person> clientList = (List<Person>)clientsData.getResponseObject();
+                return HtmlUtil.generateClientTable(clientList);
+            } else
+            {
+                return HtmlUtil.generateErrorMessage("Kunden konnten nicht geladen werden.");
+            }
+        } else
+        {
+            return HtmlUtil.generateErrorMessage("Keine Zugriffsrechte auf alle Kunden");
+        }
+    }
+
+    public string getAllEmployees(Session session)
+    {
+        if (session.sessionRole.Equals(SessionRole.Administrator))
+        {
+            AdminInterface adminInterface = (AdminInterface)ServerViewletProvider.getInstance().GetPersonViewlet();
+            ServerResponse employeeData = adminInterface.getAllEmployees();
+            if (employeeData.getResponseStatus())
+            {
+                List<Person> employeeList = (List<Person>)employeeData.getResponseObject();
+                return HtmlUtil.generateEmployeeList(employeeList);
+            }
+            return HtmlUtil.generateErrorMessage("Es konnten keine Mitarbeiter geladen werden");
+        } else
+        {
+            return HtmlUtil.generateErrorMessage("Keine Zugriffsrechte auf die Mitarbeiter");
+        }
     }
 
     public string getAllGames(Session session, bool manageView)
     {
-        ServerResponse allGamesResponse = ServerViewletProvider.getInstance().GetEmployeeInterface().getAllGames();
+        ServerResponse allGamesResponse = ((ClientInterface)ServerViewletProvider.getInstance().GetPersonViewlet()).getAllGames();
         if(allGamesResponse.getResponseStatus())
         {
             List<Spiel> gameList = (List<Spiel>)allGamesResponse.getResponseObject();
@@ -30,21 +63,104 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
 
     public string getAllHires(Session session)
     {
-        return "Alle Ausleihen";
+        if (!session.sessionRole.Equals(SessionRole.Client))
+        {
+            EmployeeInterface employeeInterface = ServerViewletProvider.getInstance().GetEmployeeInterface(session);
+            ServerResponse allHires = employeeInterface.getAllHires();
+            if (allHires.getResponseStatus())
+            {
+                StringBuilder builder = new StringBuilder();
+
+                List<Hire> hireList = (List<Hire>)allHires.getResponseObject();
+                List<Hire> openHires = hireList.Where(hire => !hire.Bezahlt).ToList();
+                List<Hire> closedHires = hireList.Where(hire => hire.Bezahlt).ToList();
+                if (openHires.Count > 0)
+                {
+                    builder.Append(HtmlUtil.generateOverviewTable(openHires, "Offene Ausleihen", getOpenConnection()));
+                }
+                if (closedHires.Count > 0)
+                {
+                    builder.Append(HtmlUtil.generateOverviewTable(closedHires, "Abgeschlossene Ausleihen", getOpenConnection()));
+                }
+                if(closedHires.Count == 0 && openHires.Count==0)
+                {
+                    builder.Append("Es wurden keine Ausleihen gefunden.");
+                }
+                return builder.ToString();
+            }
+            return HtmlUtil.generateErrorMessage(allHires.getResponseMessage());
+        } else
+        {
+            return HtmlUtil.generateErrorMessage("Keine Zugriffsrechte auf alle Ausleihen");
+        }
     }
 
     public string getDashboard(Session session)
     {
-        return "Dashboard";
+        if (session.sessionRole.Equals(SessionRole.Administrator))
+        {
+            int amountHires = -1;
+            List<Hire> allHires = new List<Hire>();
+            ServerResponse hireData = ServerViewletProvider.getInstance().GetEmployeeInterface(session).getAllHires();
+            if (hireData.getResponseStatus())
+            {
+                allHires = (List<Hire>)hireData.getResponseObject();
+                amountHires = allHires.Count;
+            }
+
+            int amountEmployees = -1;
+            ServerResponse employeeData = ((AdminInterface)ServerViewletProvider.getInstance().GetPersonViewlet()).getAllEmployees();
+            if (employeeData.getResponseStatus())
+            {
+                List<Person> allEmployees = (List<Person>)employeeData.getResponseObject();
+                amountEmployees = allEmployees.Count;
+            }
+
+            int amountClients = -1;
+            ServerResponse clientData = ServerViewletProvider.getInstance().GetEmployeeInterface(session).getAllClients();
+            if (clientData.getResponseStatus())
+            {
+                List<Person> allClients = (List<Person>)clientData.getResponseObject();
+                amountClients = allClients.Count;
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append(HtmlUtil.generateDashboard(amountHires, amountEmployees, amountClients));
+            if (allHires.Count > 0)
+            {
+                builder.Append(HtmlUtil.generateOverviewTable(allHires, "Alle Ausleihen", getOpenConnection()));
+            }
+            return builder.ToString();
+        } else
+        {
+            return HtmlUtil.generateErrorMessage("Keine Zugriffsrechte auf die Gesamtübersicht");
+        }
     }
 
+    /**
+     * Closed Hires 
+     **/
     public string getOwnHires(Session session)
     {
-        return "Eigene Vermietungen";
+        ClientInterface clientInterface = (ClientInterface) ServerViewletProvider.getInstance().GetPersonViewlet();
+        ServerResponse ownHires = clientInterface.getOwnClosedHires(session);
+        if(ownHires.getResponseStatus())
+        {
+            List<Hire> ownHireList = (List<Hire>) ownHires.getResponseObject();
+            return HtmlUtil.generateOwnClosedHireOverviewListHtml(ownHireList, getOpenConnection());
+        }
+        return HtmlUtil.generateErrorMessage(ownHires.getResponseMessage());
     }
 
     public string getOwnOpenHires(Session session)
     {
-        return "Eigene offenen Vermietungen";
+        ClientInterface clientInterface = (ClientInterface)ServerViewletProvider.getInstance().GetPersonViewlet();
+        ServerResponse ownOpenHires = clientInterface.getOwnOpenHires(session);
+        if (ownOpenHires.getResponseStatus())
+        {
+            List<Hire> ownHireList = (List<Hire>)ownOpenHires.getResponseObject();
+            return HtmlUtil.generateOwnHireOverviewListHtml(ownHireList, getOpenConnection());
+        }
+        return HtmlUtil.generateErrorMessage(ownOpenHires.getResponseMessage());
     }
 }

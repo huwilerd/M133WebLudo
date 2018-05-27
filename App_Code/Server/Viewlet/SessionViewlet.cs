@@ -30,7 +30,7 @@ public class SessionViewlet : MasterViewlet, SessionInterface
             Session sessionFromId = ServerUtil.getSessionFromId(sessionId, getOpenConnection());
             if (sessionFromId != null)
             {
-                return createResponse(1, "Session erfolgreich gefunden", sessionFromId, true);
+                return createResponse(1, "Session erfolgreich gefunden", setSession(sessionFromId), true);
                 
             }
         }
@@ -64,7 +64,7 @@ public class SessionViewlet : MasterViewlet, SessionInterface
         throw new Exception("Neue Session konnte nicht angelegt werden.");
     }
 
-    private Session updateSessionActivity(Session session)
+    public Session updateSessionActivity(Session session)
     {
         session.lastActivity = DateTime.Now;
         bool executionState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Session SET lastActivity=@lastActivity, activeSession=@activeSession WHERE sessionID=@SessionID",

@@ -58,11 +58,15 @@ public class ServerViewletProvider
         return personViewlet;
     }
 
-    public EmployeeInterface GetEmployeeInterface()
+    public EmployeeInterface GetEmployeeInterface(Session session)
     {
         if(employeeViewlet == null)
         {
             employeeViewlet = new EmployeeViewlet();
+        }
+        if(session.sessionRole.Equals(SessionRole.Client))
+        {
+            throw new Exception("Es ist Kunden nicht erlaubt auf Mitarbeiteraktivitäten zuzugreifen!");
         }
         return employeeViewlet;
     }

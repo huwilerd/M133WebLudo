@@ -15,7 +15,7 @@ public abstract class MasterViewlet
         if (connection == null)
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            builder.DataSource = "DESKTOP-QC9NDF8\\SQLEXPRESS";
+            builder.DataSource = "VMWP2\\SQLEXPRESS";
             builder.InitialCatalog = "Ludothek";
             builder.IntegratedSecurity = true;
             string connectionString = builder.ConnectionString;

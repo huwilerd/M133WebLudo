@@ -23,37 +23,66 @@ public partial class _Default : SecureMasterPage
 
     private void setupInformationBasedOnUrlParameters()
     {
-        int gameId = getGameId();
-        if(gameId > 0)
-        {
-            //currentGame = DataProvider.getInstance().getGameFromId(gameId);
-            gameNameLabel.InnerText = currentGame.name + " ausleihen";
-            //gameDescriptionLabel.InnerText = currentGame.description;
+        handleIdParameter();
+        handleActionParameter();
+        handleHireParameter();
+    }
 
-            int actionId = getActionCode();
-            if(actionId >= 0)
+    private void handleIdParameter()
+    {
+        int gameId = getGameId();
+        if (gameId > 0)
+        {
+            ServerResponse gameResponse = ((ClientInterface)GetViewletProvider().GetPersonViewlet()).getSingleGame(gameId);
+            if (gameResponse.getResponseStatus())
             {
-                isVerlaengern = actionId == 1;
-                if(isVerlaengern)
-                {
-                    int hireId = getIntFromParameter("hire");
-                    if(hireId > 0)
-                    {
-                       // currentHire = DataProvider.getInstance().getHireOfId(hireId);
-              //          currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
-                        gameNameLabel.InnerText = "Ausleihe von " + currentGame.name + " verlängern";
-                        tryButton.Value = "Verlängerung beantragen";
-                        ToDateLabel.Visible = true;
-                       // ToDateLabel.InnerHtml = currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS).ToString("dd.MM.yyyy");
-                        VonDateLabel.InnerText = "Ausleihe verlängern bis:";
-                        VonDateField.Visible = false;
-                        //VonDateField.Text = currentHire.fromDate.ToString();
-                    }
-                }
-                return;
+                Spiel spiel = (Spiel)gameResponse.getResponseObject();
+                currentGame = spiel;
+                gameNameLabel.InnerText = currentGame.name + " ausleihen";
+            }
+            else
+            {
+                gameNameLabel.InnerText = "Dieses Spiel wurde leider nicht gefunden";
+                Response.Redirect("../secure/MainMenu.aspx?page=0");
             }
         }
-           Response.Redirect("../public/LoginPage.aspx");
+    }
+
+    private void handleActionParameter()
+    {
+        int actionId = getActionCode();
+        int verlaengernCode = 1;
+        isVerlaengern = actionId == verlaengernCode;
+    }
+
+    private void handleHireParameter()
+    {
+            if (isVerlaengern)
+            {
+                int hireId = getIntFromParameter("hire");
+                if (hireId > 0)
+                {
+                ServerResponse hireResponse = ((ClientInterface)GetViewletProvider().GetPersonViewlet()).getSingleHire(hireId, getCurrentSession());
+
+                if(hireResponse.getResponseStatus())
+                {
+                    currentHire = (Hire)hireResponse.getResponseObject();
+
+                    gameNameLabel.InnerText = "Ausleihe von " + currentGame.name + " verlängern";
+                    tryButton.Value = "Verlängerung beantragen";
+                    ToDateLabel.Visible = true;
+                    currentHire.BisDatum = currentHire.BisDatum.AddDays(AppConst.HIRE_AMOUNT_DAYS);
+                    ToDateLabel.InnerHtml = currentHire.BisDatum.ToString("dd.MM.yyyy");
+                    VonDateLabel.InnerText = "Ausleihe verlängern bis:";
+                    VonDateField.Visible = false;
+                    VonDateField.Text = currentHire.VonDatum.ToString();
+                } else
+                {
+                    Response.Redirect("../secure/MainMenu.aspx?page=1");
+                }
+                    
+            }
+        }
     }
 
     private int getGameId()
@@ -64,18 +93,6 @@ public partial class _Default : SecureMasterPage
     private int getActionCode()
     {
         return getIntFromParameter("action");
-    }
-
-    private int getIntFromParameter(String param)
-    {
-        String gameIdString = Request.QueryString[param];
-        int gameId;
-        bool isNumeric = int.TryParse(gameIdString, out gameId);
-        if (isNumeric)
-        {
-            return gameId;
-        }
-        return -1;
     }
 
     protected override void handlePostback()
@@ -91,17 +108,17 @@ public partial class _Default : SecureMasterPage
 
         if (isVerlaengern)
         {
-            /*if (DataHandler.getInstance().canExpandHire(currentHire))
+
+            ServerResponse response = GetViewletProvider().GetPersonViewlet().updateHire(currentHire);
+            if(response.getResponseStatus())
             {
-                currentHire.toDate = currentHire.toDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
-                DataHandler.getInstance().saveExpandedHire(currentHire);
+                Response.Redirect("../secure/MainMenu.aspx?page=1");
             } else
             {
+                servererror.InnerText = response.getResponseMessage();
                 hasError = true;
-                servererror.InnerText = "Die Ausleihe kann nicht mehr als drei Wochen verlängert werden.";
-            }*/
-            
-            
+            }
+                 
         }
         else
         {
@@ -112,22 +129,27 @@ public partial class _Default : SecureMasterPage
             DateTime fromDate = Convert.ToDateTime(VonDateField.Text);
             DateTime toDate = fromDate.AddDays(AppConst.HIRE_AMOUNT_DAYS);
 
-            DateTime currentDate = DateTime.Now;
-            if(fromDate.Date < currentDate.Date)
+            if(fromDate.Date <= DateTime.Now)
             {
                 servererror.InnerText = "Die Ausleihe darf nicht in der Vergangenheit liegen.";
                 hasError = true;
             }
 
-            //Hire newHire = new Hire(-1, user.userId, currentGame.gameId, fromDate, toDate, 0, false);
+            Hire newHire = new Hire(-1, user.userId, currentGame.ID_Spiel, fromDate, toDate, false);
 
-            if(!hasError) { 
-                //Hire savedHire = DataHandler.getInstance().saveHireOfUser(newHire);
+            if(!hasError) {
+                ServerResponse response = GetViewletProvider().GetPersonViewlet().createHire(getCurrentSession(), newHire);
+                if(!response.getResponseStatus())
+                {
+                    servererror.InnerText = response.getResponseMessage();
+                    hasError = true;
+                }
+                
             }
         }
         if (!hasError)
         {
-            Response.Redirect("../secure/MainMenu.aspx");
+            Response.Redirect("../secure/MainMenu.aspx?page=1");
         }
     }
 

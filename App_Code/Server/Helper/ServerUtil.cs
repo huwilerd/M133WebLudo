@@ -39,6 +39,24 @@ public class ServerUtil
         return executionState ? generatedPersonId : -1;
     }
 
+    public static bool addHire(Hire hire, SqlConnection openConnection)
+    {
+        bool executionState = CommandUtil.create(openConnection).executeSingleQuery("INSERT INTO Ausleihe VALUES(@id, @fkPerson, @fkSpiel, @vonDate, @bisDate, @bezahlt)",
+            new string[] { "@id", "@fkPerson", "@fkSpiel", "@vonDate", "@bisDate", "@bezahlt" },
+            new object[] { hire.ID_Ausleihe, hire.FK_Person, hire.FK_Spiel, hire.VonDatum, hire.BisDatum, hire.Bezahlt });
+        return executionState;
+    }
+
+    public static Spiel getGameForId(int gameId, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> gameData = CommandUtil.create(openConnection).executeReader("Select * From Spiel WHERE ID_Spiel=@idSpiel", new string[] { "@idSpiel" }, new object[] { gameId });
+        if(gameData.Count == 1)
+        {
+            return ConvertUtil.getSpiel(gameData[0]);
+        }
+        return null;
+    }
+
     public static Session getSessionFromId(String sessionId, SqlConnection openConnection)
     {
         List<Dictionary<String, Object>> sessionResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Session WHERE sessionID=@sessionID",
@@ -63,6 +81,17 @@ public class ServerUtil
         return ConvertUtil.getPerson(personResult[0]);
     }
 
+    public static Hire getHireFromId(int hireId, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> hireResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Ausleihe WHERE ID_Ausleihe=@idAusleihe",
+            new string[] { "@idAusleihe" }, new object[] { hireId });
+        if (hireResult.Count == 0)
+        {
+            return null;
+        }
+        return ConvertUtil.getHire(hireResult[0]);
+    }
+
     public static User getUserFromId(int personID, SqlConnection openConnection)
     {
         List<Dictionary<String, Object>> userResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Benutzer WHERE FK_Person=@idPerson",
@@ -83,7 +112,7 @@ public class ServerUtil
 
     public static List<Spiel> getAllGames(SqlConnection openConnection)
     {
-        List<Dictionary<String, Object>> gameData = CommandUtil.create(openConnection).executeReader("SELECT * FROM Spiel", null, null);
+        List<Dictionary<String, Object>> gameData = CommandUtil.create(openConnection).executeReader("SELECT * FROM Spiel Order By ID_Spiel DESC", null, null);
         List<Spiel> spielList = new List<Spiel>();
         gameData.ForEach(delegate (Dictionary<String, Object> row)
         {
