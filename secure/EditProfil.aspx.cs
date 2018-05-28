@@ -137,8 +137,14 @@ public partial class _Default : SecureMasterPage
 
         if (!hasError)
         {
-            GetViewletProvider().GetPersonViewlet().updatePerson(person);
-            Response.Redirect("../secure/MainMenu.aspx");
+            ServerResponse serverResponse = GetViewletProvider().GetPersonViewlet().updatePerson(person);
+            if (serverResponse.getResponseStatus())
+            {
+                Response.Redirect("../secure/MainMenu.aspx?page=1");
+            } else
+            {
+                servererror.InnerText = serverResponse.getResponseMessage();
+            }
         }
     }
 

@@ -45,6 +45,26 @@ public class ValidateUtil : MasterViewlet
         return createResult("Ok", true);
     }
 
+    public ValidateResult validateBeforeExtendingHire(Hire hire)
+    {
+        if (hire == null)
+        {
+            return createResult("Ausleihe existiert nicht", false);
+        }
+        if (hire.Bezahlt)
+        {
+            return createResult("Ausleihe ist bereits abgeschlossen", false);
+        }
+        TimeSpan span = hire.BisDatum - hire.VonDatum;
+        int amountHiredWeeks = Convert.ToInt32(span.TotalDays / AppConst.HIRE_AMOUNT_DAYS) - 1;
+
+        if(amountHiredWeeks > AppConst.HIRE_MAX_AMOUNT_OF_REHIRES)
+        {
+            return createResult("Die Ausleihe kann nicht mehr als " + AppConst.HIRE_MAX_AMOUNT_OF_REHIRES + " Wochen verlängert werden", false);
+        }
+        return createResult("Ok", true);
+    }
+
     public ValidateResult validateBeforeOpeningHire(Hire hire)
     {
         if (hire == null)

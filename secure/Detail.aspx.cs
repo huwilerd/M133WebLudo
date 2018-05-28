@@ -37,6 +37,7 @@ public partial class _Default : SecureMasterPage
                 Spiel spiel = (Spiel)gameResponse.getResponseObject();
                 currentGame = spiel;
                 gameNameLabel.InnerText = currentGame.name + " ausleihen";
+                gameDescriptionLabel.InnerText = spiel.description;
             }
             else
             {
@@ -85,6 +86,27 @@ public partial class _Default : SecureMasterPage
         {
             VonDateField.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
+        setDetailInformation();
+
+    }
+
+    private void setDetailInformation()
+    {
+        if (currentGame != null)
+        {
+            ServerResponse serverResp = ServerViewletProvider.getInstance().GetSessionInterface().getPersonFromSession(getCurrentSession());
+            if(serverResp.getResponseStatus())
+            {
+                Person currentPerson = (Person)serverResp.getResponseObject();
+                String hireCosts = CalcViewlet.wrapInCurrency(CalcViewlet.create().calculatePrice(getCurrentSession(), currentGame, currentPerson));
+                String kategorieName = CalcViewlet.create().getKategorieName(currentGame.kategorie);
+                String kategorieInfo = kategorieName == null ? "Unbekannt" : kategorieName;
+                detailDescription.InnerHtml = "Ausleihekosten: " + hireCosts + " <br>Kategorie: " + kategorieInfo;
+                return;
+            }
+            
+        }
+            detailDescription.InnerText = "Keine Informationen verfügbar";
     }
 
     private int getGameId()

@@ -35,10 +35,11 @@ public class ServerUtil
         person.ort = "Unbekannt";
         person.postleitzahl = 0;
         person.land = "Unbekannt";
+        person.Geburtsdatum = DateTime.Now;
         return person;
     }
 
-    public static bool deletePerson(Person person, Session session, SqlConnection openConnection)
+    public static ServerResponse deletePerson(Person person, Session session, SqlConnection openConnection)
     {
         if (!isAngestellt(person.ID_Person, openConnection))
         {
@@ -54,14 +55,14 @@ public class ServerUtil
                         Hire hire = usersHireList[i];
                         if (!hire.Bezahlt)
                         {
-                            return false;
+                            return new ServerResponse(1, "Person hat noch offene Ausleihen.", null, false);
                         }
                     }
                     person = anonymizePerson(person);
                     ServerResponse updateResponse = ServerViewletProvider.getInstance().GetPersonViewlet().updatePerson(person);
                     if (!updateResponse.getResponseStatus())
                     {
-                        return false;
+                        return new ServerResponse(1, "Person konnte nicht aktualisiert werden: " + updateResponse.getResponseMessage(), null, false);
                     }
                     deletePersonLoginInformation(person.ID_Person, openConnection);
                 }
@@ -70,11 +71,12 @@ public class ServerUtil
                     deletePersonLoginInformation(person.ID_Person, openConnection);
                     deletePerson(person.ID_Person, openConnection);
                 }
-                return true;
+                return new ServerResponse(1, "Person wurde erfolgreich entfernt", null, true);
+
 
             }
         }
-        return false;
+        return new ServerResponse(1, "Mitarbeiter können nicht entfernt werden. Diese müssen zuerst entlassen werden.", null, false);
     }
 
     private static bool isAngestellt(int personId, SqlConnection openConnection)
@@ -157,6 +159,76 @@ public class ServerUtil
             return null;
         }
         return Convert.ToString(kategorieResult[0]["Name"]);
+    }
+
+    public static TarifKategorie GetTarifKategorie(int tarifKategorieId, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> kategorieResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM TarifKategorie WHERE ID_TarifKategorie=@idtk",
+            new string[] { "@idtk" }, new object[] { tarifKategorieId });
+
+        if (kategorieResult.Count == 0)
+        {
+            return null;
+        }
+
+        return ConvertUtil.GetTarifKategorie(kategorieResult[0]);
+    }
+
+    public static List<TarifKategorie> GetAllTarifKategories(SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> kategorieResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM TarifKategorie",
+            null, null);
+        List<TarifKategorie> tarifKategories = new List<TarifKategorie>();
+
+        kategorieResult.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            tarifKategories.Add(ConvertUtil.GetTarifKategorie(row));
+        });
+
+        return tarifKategories;
+    }
+
+    public static List<Kategorie> GetAllKategories(SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> kategorieResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Kategorie",
+            null, null);
+        List<Kategorie> kategories = new List<Kategorie>();
+
+        kategorieResult.ForEach(delegate (Dictionary<String, Object> row)
+        {
+            kategories.Add(ConvertUtil.GetKategorie(row));
+        });
+
+        return kategories;
+    }
+
+    public static bool worksForLudothek(int personId, int ludothekId, SqlConnection openConnection)
+    {
+        if (ServerUtil.isAngestellt(personId, openConnection))
+        {
+            List<Dictionary<String, Object>> jobsResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Mitarbeiter WHERE FK_Person=@fkPerson AND FK_Ludothek=@fkLudothek",
+                new string[] { "@fkPerson", "@fkLudothek" }, new object[] { personId, ludothekId });
+            return jobsResult.Count == 1;
+        }
+        return false;
+    }
+
+    public static bool updateLudothek(Ludothek ludothek, SqlConnection openConnection)
+    {
+        return CommandUtil.create(openConnection).executeSingleQuery("UPDATE Ludothek Set Name=@name, Strasse=@strasse, PLZ=@plz, Ort=@ort WHERE ID_Ludothek=@idLudothek",
+            new string[] { "@name","@strasse", "@plz", "@ort", "@idLudothek" },
+            new object[] { ludothek.name, ludothek.strasse, ludothek.postleitzahl, ludothek.ort, ludothek.ID_Ludothek });
+    }
+
+    public static Ludothek GetLudothek(int fkLudothek, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> jobsResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Ludothek WHERE ID_Ludothek=@idLudothek",
+                new string[] { "@idLudothek" }, new object[] { fkLudothek });
+        if (jobsResult.Count == 0)
+        {
+            return null;
+        }
+        return ConvertUtil.GetLudothek(jobsResult[0]);
     }
 
     public static Person getPersonFromId(int personID, SqlConnection openConnection)

@@ -4,10 +4,14 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Zusammenfassungsbeschreibung für ServerConst
+/// Alle relevanten Konstanten sind in dieser Klasse vorhanden
 /// </summary>
 public class ServerConst
 {
+    //Connection
+    public static String CONNECTION_STRING = "VMWP2\\SQLEXPRESS";
+    public static String CONNECTION_DATABASE = "Ludothek";
+
     public static int DEFAULT = -1;
 
     //Session

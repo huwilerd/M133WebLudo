@@ -72,9 +72,6 @@
                 </td>
                 <td>     
                     <select id="KategorieField" runat="server" required>
-                        <option value="100" selected="selected">Kategorie 1</option>
-                        <option value="200">Kategorie 2</option>
-                        <option value="300">Kateogrie 3</option>
                     </select>
                 </td>
 		        </tr>
@@ -84,10 +81,7 @@
 				    <label for="TarifKategorieField">Tarif-Kategorie:</label>	 
                 </td>
                 <td>     
-                    <select id="TarifKategorieField" runat="server" required>
-                        <option value="100" selected="selected">Tarifkategorie 1</option>
-                        <option value="150">Tarifkategorie 2</option>
-                        <option value="200">Tarifkategorie 3</option>
+                    <select id="TarifKategorieField" runat="server">
                     </select>
                 </td>
 		        </tr>

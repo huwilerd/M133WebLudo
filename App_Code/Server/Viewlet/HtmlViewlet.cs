@@ -76,11 +76,11 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
                 List<Hire> closedHires = hireList.Where(hire => hire.Bezahlt).ToList();
                 if (openHires.Count > 0)
                 {
-                    builder.Append(HtmlUtil.generateOverviewTable(openHires, "Offene Ausleihen", getOpenConnection()));
+                    builder.Append(HtmlUtil.generateOverviewTable(session, openHires, "Offene Ausleihen", getOpenConnection()));
                 }
                 if (closedHires.Count > 0)
                 {
-                    builder.Append(HtmlUtil.generateOverviewTable(closedHires, "Abgeschlossene Ausleihen", getOpenConnection()));
+                    builder.Append(HtmlUtil.generateOverviewTable(session, closedHires, "Abgeschlossene Ausleihen", getOpenConnection()));
                 }
                 if(closedHires.Count == 0 && openHires.Count==0)
                 {
@@ -105,7 +105,7 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
                 List<Ludothek> allLudotheken = (List<Ludothek>)allLudothekenData.getResponseObject();
                 if(allLudotheken.Count > 0)
                 {
-                    return HtmlUtil.generateLudothekenListHtml(allLudotheken);
+                    return HtmlUtil.generateLudothekenListHtml(allLudotheken, session, getOpenConnection());
                 }
                 return HtmlUtil.generateErrorMessage("Es wurden keine Ludotheken gefunden");
             }
@@ -166,7 +166,7 @@ public class HtmlViewlet : MasterViewlet, HtmlInterface
             builder.Append(HtmlUtil.generateDashboard(amountHires, amountEmployees, amountClients));
             if (allHires.Count > 0)
             {
-                builder.Append(HtmlUtil.generateOverviewTable(allHires, "Alle Ausleihen", getOpenConnection()));
+                builder.Append(HtmlUtil.generateOverviewTable(session, allHires, "Alle Ausleihen", getOpenConnection()));
             }
             return builder.ToString();
         } else

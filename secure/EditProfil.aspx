@@ -116,7 +116,7 @@
                     
 			    </td>
 			    <td>
-                    <a href="MainMenu.aspx"><   Zurück</a>
+                    <a href="MainMenu.aspx?page=1"><   Zurück</a>
 				    <input type="submit" value="Speichern" id="saveButton" runat="server"/>
                     
 			    </td>

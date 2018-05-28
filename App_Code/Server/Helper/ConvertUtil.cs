@@ -43,6 +43,21 @@ public class ConvertUtil
             Convert.ToBoolean(data["Bezahlt"]));
     }
 
+    public static TarifKategorie GetTarifKategorie(Dictionary<String, Object> data)
+    {
+        return new TarifKategorie(Convert.ToInt32(data["ID_TarifKategorie"]),
+            Convert.ToString(data["Name"]),
+            float.Parse(Convert.ToString(data["Normalpreis"])),
+            float.Parse(Convert.ToString(data["Mitgliedschaftsauflage"])));
+    }
+
+    public static Kategorie GetKategorie(Dictionary<String, Object> data)
+    {
+        return new Kategorie(Convert.ToInt32(data["ID_Kategorie"]),
+            Convert.ToString(data["Name"]),
+            Convert.ToInt32(data["Altersfreigabe"]));
+    }
+
     private static object convertDBNullToEmpty(object value)
     {
         if(value==DBNull.Value)

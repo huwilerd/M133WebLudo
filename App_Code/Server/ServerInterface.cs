@@ -87,6 +87,8 @@ public interface EmployeeInterface
 
     ServerResponse deleteUser(int userId);
 
+    ServerResponse createMitgliedsschaftForPerson(int personId);
+
 }
 
 public interface AdminInterface
@@ -98,6 +100,10 @@ public interface AdminInterface
     ServerResponse makeEmployee(int fkPerson);
 
     ServerResponse removeEmployee(Session session, int fkPerson);
+
+    ServerResponse updateLudothek(Session session, Ludothek ludothek);
+
+    ServerResponse getSingleLudothek(int fkLudothek);
 }
 
 public interface HtmlInterface

@@ -71,11 +71,15 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
     public ServerResponse updateHire(Hire hire)
     {
-        bool executeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Ausleihe SET BisDatum=@bisDatum WHERE ID_Ausleihe=@idAusleihe",
-            new string[] { "@bisDatum", "@idAusleihe" },
-            new object[] { hire.BisDatum, hire.ID_Ausleihe });
-        return executeState ? createResponse(1, "Ausleihe wurde geupdated", null, true) : createResponse(1, "Ausleihe konnte nicht geupdated werden", null, false);
-
+        ValidateResult result = ValidateUtil.getInstance().validateBeforeExtendingHire(hire);
+        if (result.validateStatus)
+        {
+            bool executeState = CommandUtil.create(getOpenConnection()).executeSingleQuery("UPDATE Ausleihe SET BisDatum=@bisDatum WHERE ID_Ausleihe=@idAusleihe",
+                new string[] { "@bisDatum", "@idAusleihe" },
+                new object[] { hire.BisDatum, hire.ID_Ausleihe });
+            return executeState ? createResponse(1, "Ausleihe wurde geupdated", null, true) : createResponse(1, "Ausleihe konnte nicht geupdated werden", null, false);
+        }
+        return createResponse(1, result.validateMessage, null, result.validateStatus);
     }
 
     public ServerResponse updatePerson(Person person)
@@ -129,10 +133,6 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
             return createResponse(1, "Keine Person gefunden", null, false);
         }
 
-        if(ServerUtil.deletePerson(person, session, getOpenConnection()))
-        {
-            return createResponse(1, "Account wurde gelöscht", null, true);
-        }
-        return createResponse(1, "Account konnte nicht gelöscht werden", null, false);
+        return ServerUtil.deletePerson(person, session, getOpenConnection());
     }
 }

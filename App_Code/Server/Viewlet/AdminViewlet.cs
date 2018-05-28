@@ -77,4 +77,27 @@ public class AdminViewlet : MasterViewlet, AdminInterface
 
         return createResponse(1, "Alle Ludotheken", ludothekList, true);
     }
+
+    public ServerResponse updateLudothek(Session session, Ludothek ludothek)
+    {
+        if(ServerUtil.worksForLudothek(session.FK_Person, ludothek.ID_Ludothek, getOpenConnection()))
+        {
+            if(ServerUtil.updateLudothek(ludothek, getOpenConnection()))
+            {
+                return createResponse(1, "Ludothek wurde erfolgreich aktualisiert", null, true);
+            }
+            return createResponse(1, "Ludothek konnte nicht aktualisiert werden", null, false);
+        }
+        return createResponse(1, "Um eine Ludothek zu bearbeiten muss man Leiter deren sein", null, false);
+    }
+
+    public ServerResponse getSingleLudothek(int fkLudothek)
+    {
+        Ludothek ludothek = ServerUtil.GetLudothek(fkLudothek, getOpenConnection());
+        if(ludothek!= null)
+        {
+            return createResponse(1, "Ludothek erfolgreich gefunden", ludothek, true);
+        }
+        return createResponse(1, "Ludothek konnte nicht gefunden werden", null, false);
+    }
 }

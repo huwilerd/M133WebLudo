@@ -18,6 +18,7 @@ public partial class _Default : SecureMasterPage
     protected override void setupPage(Session session)
     {
         base.setupPage(session);
+        setupSelectionBoxes();
         handleParameter();
     }
 
@@ -31,6 +32,7 @@ public partial class _Default : SecureMasterPage
 
     protected override void handlePostback()
     {
+        setupSelectionBoxes();
         handleParameter();
         handleSave();
     }
@@ -138,6 +140,27 @@ public partial class _Default : SecureMasterPage
         TarifKategorieField.Value = TarifKategorieField.Items.FindByValue(Convert.ToString(spiel.tarifkategorie)).Value;
         SpielDescriptionField.Text = spiel.description;
         SpielImageLinkField.Text = spiel.imageLink;
+    }
+
+    private void setupSelectionBoxes()
+    {
+        List<TarifKategorie> tarifKategories = CalcViewlet.create().GetTarifKategories();
+        if (tarifKategories != null)
+        {
+            tarifKategories.ForEach(delegate (TarifKategorie kategorie)
+            {
+                TarifKategorieField.Items.Add(new ListItem(kategorie.Name, Convert.ToString(kategorie.ID_TarifKategorie)));
+            });
+        }
+
+        List<Kategorie> kategories = CalcViewlet.create().GetKategories();
+        if(kategories!=null)
+        {
+            kategories.ForEach(delegate (Kategorie nKategorie)
+            {
+                KategorieField.Items.Add(new ListItem(nKategorie.Name, Convert.ToString(nKategorie.ID_Kategorie)));
+            });
+        }
     }
 
     private void handleNewGame()

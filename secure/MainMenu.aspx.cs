@@ -109,6 +109,28 @@ public partial class MainMenu : SecureMasterPage
                             }
                         }
                         break;
+                    case "upgradeMitg":
+                        int emplMitgId = getIntFromParameter("empl");
+                        if (emplMitgId > 0)
+                        {
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
+                            {
+                                ServerResponse upgradeClientToMitgClient = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).createMitgliedsschaftForPerson(emplMitgId);
+                                if (upgradeClientToMitgClient.getResponseStatus())
+                                {
+                                    Response.Redirect("MainMenu.aspx?page=4");
+                                }
+                                else
+                                {
+                                    flexContainer.InnerHtml = "Aktion konnte nicht durchgeführt werden: " + upgradeClientToMitgClient.getResponseMessage();
+                                }
+                            }
+                            else
+                            {
+                                flexContainer.InnerHtml = "Keine Zugriffsrechte für diese Funktion";
+                            }
+                        }
+                        break;
                     case "downgrade":
                         int downgradeEmplId = getIntFromParameter("empl");
                         if (downgradeEmplId > 0)

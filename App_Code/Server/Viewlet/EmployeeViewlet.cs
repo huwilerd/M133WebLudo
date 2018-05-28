@@ -36,6 +36,34 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
         }
     }
 
+    public ServerResponse createMitgliedsschaftForPerson(int personId)
+    {
+        Person person = ServerUtil.getPersonFromId(personId,getOpenConnection());
+        if(person==null)
+        {
+            return createResponse(1, "Person existiert nicht", null, false);
+        }
+
+        if (person.mitgliedschaft == null || person.mitgliedschaft.ID_Mitgliedschaft == -1)
+        {
+            int generatedId = ServerUtil.generateNewIdForTable("Mitgliedschaft", "ID_Mitgliedschaft", getOpenConnection());
+            Mitgliedschaft mitgliedschaft = new Mitgliedschaft(generatedId, "Neu", "Unbezahlt", DateTime.Now, DateTime.Now.AddYears(1));
+            if(ServerUtil.addMitgliedschaft(mitgliedschaft, getOpenConnection()))
+            {
+                person.mitgliedschaft = mitgliedschaft;
+                ServerResponse updateResponse = ServerViewletProvider.getInstance().GetPersonViewlet().updatePerson(person);
+                if(updateResponse.getResponseStatus())
+                {
+                    return createResponse(1, "Mitgliedschaft wurde hinzugefügt", null, true);
+                }
+                return createResponse(1, updateResponse.getResponseMessage(), null, false);
+            }
+            return createResponse(1, "Mitgliedschaft konnte nicht angelegt werden", null, false);
+        }
+
+        return createResponse(1, "Person hat bereits eine Mitgliedschaft", null, false);
+    }
+
     public ServerResponse deleteUser(int userId)
     {
         Person person = ServerUtil.getPersonFromId(userId, getOpenConnection());
@@ -51,12 +79,7 @@ public class EmployeeViewlet : MasterViewlet, EmployeeInterface
         }
 
 
-        if(ServerUtil.deletePerson(person, sessionOfPerson, getOpenConnection()))
-        {
-            return createResponse(1, "Person wurde gelöscht", null, true);
-        }
-
-        return createResponse(1, "Person konnte nicht gelöscht werden", null, false);
+        return ServerUtil.deletePerson(person, sessionOfPerson, getOpenConnection());
     }
 
     public ServerResponse getAllClients()

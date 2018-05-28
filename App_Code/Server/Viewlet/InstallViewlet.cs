@@ -30,6 +30,9 @@ public class InstallViewlet : MasterViewlet
     public static Verband verband = new Verband(20, "St. Galler Ludothekverband");
     public static Ludothek ludothek = new Ludothek(10, "Ludothek Gbs", "Demutsstrasse 42", 4200, "Weinfelden", verband.ID_Verband);
 
+    public static List<Ludothek> ghostLudotheks = new List<Ludothek> { new Ludothek(1, "Ludothek Wil", "Wilerstrasse 10", 9020, "Wil", verband.ID_Verband),
+                                                                        new Ludothek(3, "Ludothek Gossau", "Gossauerstrasse 24", 8200, "Gossau", verband.ID_Verband),
+                                                                        new Ludothek(55, "Ludothek Zürich", "Zürcherstrasse 100b", 6500, "Zürich", verband.ID_Verband)};
     /**
      * Initial Database 
      **/
@@ -188,6 +191,11 @@ public class InstallViewlet : MasterViewlet
         {
             throw new Exception("Ludothek konnte nicht gespeichert werden");
         }
+
+        ghostLudotheks.ForEach(delegate (Ludothek tmpLudo)
+        {
+            ServerUtil.addLudothek(tmpLudo, getOpenConnection());
+        });
     }
 
     private void installInitialHires(String userEmail)
