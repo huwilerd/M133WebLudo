@@ -17,12 +17,12 @@ public class InstallViewlet : MasterViewlet
     /**
      * Initial Data 
      **/
-    public static List<Kategorie> kategories = new List<Kategorie> { new Kategorie(100, "Kategorie eins", 0),
-                                                                     new Kategorie(200, "Kategorie zwei", 6),
-                                                                     new Kategorie(300, "Kategorie dreo", 16)  };
-    public static List<TarifKategorie> tarifKategories = new List<TarifKategorie> { new TarifKategorie(100, "Familientarif", 10, 5),
-                                                                                    new TarifKategorie(150, "Fantarif", 8, 10),
-                                                                                    new TarifKategorie(200, "Normaltarif", 15, 10)  };
+    public static List<Kategorie> kategories = new List<Kategorie> { new Kategorie(100, "Kindergarten", 0),
+                                                                     new Kategorie(200, "Unterstufe", 6),
+                                                                     new Kategorie(300, "Oberstufe", 16)  };
+    public static List<TarifKategorie> tarifKategories = new List<TarifKategorie> { new TarifKategorie(100, "Einzeltarif", 10, 5),
+                                                                                    new TarifKategorie(150, "Familientarif", 8, 10),
+                                                                                    new TarifKategorie(200, "Schultarif", 15, 10)  };
     public static List<Spiel> spiele = new List<Spiel> { new Spiel(1000, "Monopoly", "Orell Füssli", 10, tarifKategories[0].ID_TarifKategorie, kategories[0].ID_Kategorie, "https://bit.ly/2IUUQ3H", "Monopoly (engl. „Monopol“) ist ein bekanntes US-amerikanisches Brettspiel. Ziel des Spiels ist es, ein Grundstücksimperium aufzubauen und alle anderen ..."),
                                                          new Spiel(1012, "Mensch ärgere dich nicht", "Hug Verlag", 5, tarifKategories[1].ID_TarifKategorie, kategories[1].ID_Kategorie, "https://bit.ly/2KWmIoH", "Mensch ärgere Dich nicht ist ein Gesellschaftsspiel für zwei bis sechs Personen. Es zählt zu den Klassikern unter den deutschen Brettspielen und ist ein ..."),
                                                          new Spiel(1015, "Schach", "GBSSG", 5, tarifKategories[2].ID_TarifKategorie, kategories[2].ID_Kategorie, "https://bit.ly/2KVJ4GE", "Schach (von persisch šāh Schah / شاه /‚König' – daher die Bezeichnung „das königliche Spiel“) ist ein strategisches Brettspiel, bei dem zwei Spieler ..."),

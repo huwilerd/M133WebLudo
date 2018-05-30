@@ -8,11 +8,11 @@
     <title>Ludothek</title>
 
     <link rel="stylesheet" href="design/design.css" />
-
+   
 </head>
 <body>
-    <header class="clearfix">
-        <div id="mainContainerHeader">
+    <header >
+        <div id="mainContainerHeader" class="clearfix">
             <nav>
                 
                 <div class="navigationElement" id="user">
