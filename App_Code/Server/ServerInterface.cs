@@ -56,6 +56,8 @@ public interface PersonFunctionInterface
 
     ServerResponse updateUser(User user);
 
+    ServerResponse updateUserPassword(User user);
+
     ServerResponse updateHire(Hire hire);
 
     ServerResponse createHire(Session session, Hire hire);

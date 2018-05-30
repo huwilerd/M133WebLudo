@@ -135,4 +135,15 @@ public class PersonViewlet : MasterViewlet, PersonFunctionInterface, ClientInter
 
         return ServerUtil.deletePerson(person, session, getOpenConnection());
     }
+
+    public ServerResponse updateUserPassword(User user)
+    {
+        User userFromMail = ServerUtil.getUserFromMail(user.email, getOpenConnection());
+        if(userFromMail!= null)
+        {
+            userFromMail.password = ServerUtil.hashPassword(user.password);
+            return updateUser(userFromMail);
+        }
+        return createResponse(1, "Es wurde kein Benutzer mit der angegebenen E-Mail gefunden", null, false);
+    }
 }

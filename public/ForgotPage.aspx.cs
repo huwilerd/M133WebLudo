@@ -18,20 +18,23 @@ public partial class public_ForgotPage : MasterPage
         String forgotEmail = EmailField.Text;
         String newPasswort = PasswortField.Text;
 
-        User tmpUser = new User(-1, forgotEmail, "");
-        /*User foundUser = DataHandler.getInstance().doesUserExist(tmpUser);
-        if(foundUser != null)
+        User tmpUser = new User(-1, forgotEmail, newPasswort);
+        ServerResponse isEmailResp = GetViewletProvider().getAuthenticationViewlet().isEmailInUse(forgotEmail);
+
+        if(isEmailResp.getResponseStatus())
         {
-            servererror.InnerText = "";
-            foundUser.password = newPasswort;
-            DataHandler.getInstance().updateUser(foundUser);
-            Response.Redirect("../public/LoginPage.aspx");
+            ServerResponse userIsUpdated = GetViewletProvider().GetPersonViewlet().updateUserPassword(tmpUser);
+            if(userIsUpdated.getResponseStatus())
+            {
+                Response.Redirect("LoginPage.aspx");
+            } else
+            {
+                servererror.InnerText = userIsUpdated.getResponseMessage();
+            }
+        } else
+        {
+            servererror.InnerText = "E-Mail gehört zu keinem Benutzer.";
         }
-        else
-        {
-            servererror.InnerText = "Es wurde kein Nutzer mit der angegeben E-Mail gefunden!";
-        }*/
-        
 
     }
 

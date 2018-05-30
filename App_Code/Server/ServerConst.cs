@@ -15,7 +15,7 @@ public class ServerConst
     public static int DEFAULT = -1;
 
     //Session
-    public static readonly int SESSION_TIMEOUT_MINUTES = 1;
+    public static readonly int SESSION_TIMEOUT_MINUTES = 10;
 
     //Commands
     public static readonly String INSERT_PERSON_QUERY = "INSERT INTO Person(ID_Person, Name, Geschlecht, Geburtsdatum, Einstiegsdatum, FK_Mitgliedschaft) VALUES (@id_person, @name, @geschlecht, @geburtsdatum, @einstiegsdatum, @mitgliedschaft)";

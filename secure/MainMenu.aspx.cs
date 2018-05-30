@@ -113,7 +113,8 @@ public partial class MainMenu : SecureMasterPage
                         int emplMitgId = getIntFromParameter("empl");
                         if (emplMitgId > 0)
                         {
-                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator))
+                            if (getCurrentSession().sessionRole.Equals(SessionRole.Administrator) ||
+                                getCurrentSession().sessionRole.Equals(SessionRole.Employee))
                             {
                                 ServerResponse upgradeClientToMitgClient = GetViewletProvider().GetEmployeeInterface(getCurrentSession()).createMitgliedsschaftForPerson(emplMitgId);
                                 if (upgradeClientToMitgClient.getResponseStatus())

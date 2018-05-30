@@ -275,6 +275,17 @@ public class ServerUtil
         return userList;
     }
 
+    public static User getUserFromMail(String mail, SqlConnection openConnection)
+    {
+        List<Dictionary<String, Object>> userResult = CommandUtil.create(openConnection).executeReader("SELECT * FROM Benutzer WHERE mail=@mail",
+            new string[] { "@mail" }, new object[] { mail });
+        if (userResult.Count == 0)
+        {
+            return null;
+        }
+        return ConvertUtil.getUser(userResult[0]);
+    }
+
     public static bool doesUserExist(String mail, SqlConnection openConnection)
     {
         List<Dictionary<String, object>> readResult = CommandUtil.create(openConnection).executeReader(ServerConst.SELECT_BENUTZER_ByName,
